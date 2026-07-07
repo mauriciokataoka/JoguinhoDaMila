@@ -8,10 +8,11 @@
 Um jogo infantil multiplayer em rede para crianças.
 
 ### Requisitos do Servidor
-- **Plataforma:** Preferencialmente iOS no celular da Mila, sujeito à disponibilidade de conta Apple Developer.
-- **Formato:** App nativo iOS com servidor Go embutido ou alternativa equivalente se não houver conta Apple Developer.
+- **Plataforma:** iOS no celular da Mila.
+- **Formato:** App nativo iOS com servidor Go embutido.
 - **Função:** Serve a PWA aos clientes, expõe API de jogo e gera QR code para conexão.
 - **Deploy:** Atualização e distribuição apenas do app da Mila.
+- **Nota:** Não dispomos de conta Apple Developer no momento; é preciso avaliar alternativas de distribuição ou assinatura para viabilizar o deploy iOS.
 
 ### Requisitos do Cliente
 - **Plataforma:** PWA acessada por navegador móvel.
