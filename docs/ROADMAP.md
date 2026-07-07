@@ -7,6 +7,12 @@
 - [x] É um app? Se sim, criar src/.
 - [x] Se for software: definir a stack.
 - [ ] Definir funcionalidades e regras de jogo (PRD).
+- [x] Especificar fluxo servidor/cliente e tela de sala de espera.
+- [x] Atualizar PRD com arquitetura final iOS server + PWA e fluxo de partida.
+- [x] Criar ADR de fallback de IP e reconexão manual no PWA.
+- [x] Criar ADR de regras de sessão, ranking e identificação PWA.
 - [ ] Implementar modal de inicialização offline com coração rosa claro, fundo rosa escuro e faixa diagonal.
+- [ ] Criar protótipo inicial do app servidor e da PWA cliente.
+- [x] Documentar regras de partida: limite de tentativas configurável, token por nickname, 10s por vez, desistência, palavras com espaços/hífens.
 
 
