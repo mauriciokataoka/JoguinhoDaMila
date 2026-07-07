@@ -8,7 +8,7 @@
 - [x] Se for software: definir a stack.
 - [x] Definir funcionalidades e regras de jogo (PRD).
 - [x] Especificar fluxo servidor/cliente e tela de sala de espera.
-- [ ] Avaliar alternativa de deploy iOS sem conta Apple Developer ou migrar o servidor para Android, pois o app precisa ser definitivo.
+- [ ] **BLOQUEADOR**: Decidir entre alternativa iOS (ex.: AltStore) ou migrar servidor para Android.
 - [x] Atualizar PRD com arquitetura final iOS server + PWA e fluxo de partida.
 - [x] Criar ADR de fallback de IP e reconexão manual no PWA.
 - [x] Criar ADR de regras de sessão, ranking e identificação PWA.
@@ -16,8 +16,16 @@
 - [ ] Criar protótipo inicial do app servidor e da PWA cliente.
 - [x] Documentar regras de partida: limite de tentativas configurável, token por nickname, 10s por vez, desistência, palavras com espaços/hífens.
 
+## Bloqueador crítico
+- **Deploy iOS sem Apple Developer**: App servidor precisa ser definitivo (não pode expirar a cada 7 dias).
+  - Opção A: Encontrar alternativa de deploy iOS (AltStore, código aberto, etc.).
+  - Opção B: Migrar servidor de iOS para Android.
+  - **Decisão aguardando para amanhã.**
+  - Ver [ADR-004](docs/adr/004-deploy-ios.md) para detalhes.
+
 ## Planejamento imediato
-- Próximo passo: protótipo inicial do app servidor Go + PWA cliente.
-- Em seguida: interface de inicialização do servidor e sala de espera dos clientes.
+- Retomar após decisão do bloqueador sobre iOS vs Android.
+- Se iOS com alternativa: protótipo inicial do app servidor e da PWA cliente.
+- Se Android: reavaliação da stack e reorganização do roadmap.
 
 
