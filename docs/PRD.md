@@ -18,8 +18,8 @@ Um jogo infantil multiplayer em rede para crianças.
 - **Entrada:** Conecta via QR code para o IP/porta do celular da Mila.
 - **Onboarding:** Cada cliente fornece um nickname no primeiro modal.
 
-### Stack Confirmada
-- **Servidor:** Go executável standalone embutido no app iOS.
+### Stack Proposta
+- **Servidor:** Go executável standalone embutido no app iOS, condicionado à disponibilidade de conta Apple Developer.
 - **Cliente:** PWA para navegadores móveis.
 - **Rede:** Wi-Fi comum ou hotspot local; não requer internet.
 - **Admin:** App da Mila serve a API e a interface inicial do jogo.
