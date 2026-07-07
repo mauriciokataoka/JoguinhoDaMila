@@ -8,7 +8,7 @@
 - [x] Se for software: definir a stack.
 - [x] Definir funcionalidades e regras de jogo (PRD).
 - [x] Especificar fluxo servidor/cliente e tela de sala de espera.
-- [ ] Validar disponibilidade de conta Apple Developer e avaliar alternativa de deploy para iOS, já que iOS é requisito mas a conta não está disponível.
+- [ ] Avaliar alternativa de deploy iOS sem conta Apple Developer, mantendo iOS como requisito do servidor.
 - [x] Atualizar PRD com arquitetura final iOS server + PWA e fluxo de partida.
 - [x] Criar ADR de fallback de IP e reconexão manual no PWA.
 - [x] Criar ADR de regras de sessão, ranking e identificação PWA.

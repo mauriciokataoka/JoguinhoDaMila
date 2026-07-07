@@ -27,11 +27,10 @@ O repositório já foi criado em `github.com/mauriciokataoka/JoguinhoDaMila` e o
 ## Deploy depois de pronto
 1.  Finalizar o desenvolvimento no repositório e garantir que o app iOS servidor esteja funcionando.
 2.  Build do app iOS com Xcode, incorporando o binário Go e os arquivos estáticos da PWA.
-3.  Assinar o app com uma conta Apple Developer e configurar o provisioning profile para o dispositivo da Mila.
-4.  Como não dispomos de conta Apple Developer no momento, avaliar alternativas de distribuição ou assinatura para viabilizar o deploy iOS.
-5.  Instalar o app no celular da Mila via Xcode direto, TestFlight ou distribuição ad hoc, quando a conta estiver disponível.
-6.  Executar o app no celular da Mila; ele servirá a PWA localmente e gerará o QR code para as clientes.
-7.  O PWA não precisa ser publicado em servidor público, pois será servido pelo app localmente.
+3.  Não dispomos de conta Apple Developer no momento; o deploy iOS precisa ser avaliado com alternativas de distribuição ou assinatura.
+4.  Instalar o app no celular da Mila via Xcode direto, TestFlight ou distribuição ad hoc somente se/quando a conta estiver disponível.
+5.  Executar o app no celular da Mila; ele servirá a PWA localmente e gerará o QR code para as clientes.
+6.  O PWA não precisa ser publicado em servidor público, pois será servido pelo app localmente.
 
 ### Observações
 - O deploy principal é a instalação do app servidor no celular da Mila.
