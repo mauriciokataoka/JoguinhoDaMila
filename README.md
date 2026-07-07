@@ -27,13 +27,17 @@ O repositório já foi criado em `github.com/mauriciokataoka/JoguinhoDaMila` e o
 ## Deploy depois de pronto
 1.  Finalizar o desenvolvimento no repositório e garantir que o app iOS servidor esteja funcionando.
 2.  Build do app iOS com Xcode, incorporando o binário Go e os arquivos estáticos da PWA.
-3.  Não dispomos de conta Apple Developer no momento; o deploy iOS precisa ser avaliado com alternativas de distribuição ou assinatura.
-4.  Instalar o app no celular da Mila via Xcode direto, TestFlight ou distribuição ad hoc somente se/quando a conta estiver disponível.
-5.  Executar o app no celular da Mila; ele servirá a PWA localmente e gerará o QR code para as clientes.
-6.  O PWA não precisa ser publicado em servidor público, pois será servido pelo app localmente.
+3.  Não dispomos de conta Apple Developer no momento; isso torna a distribuição oficial de um app iOS definitivo inviável atualmente.
+4.  Como o app servidor precisa ser definitivo, não abrimos mão de uma solução de deploy que não exija rebuild a cada 7 dias.
+5.  Precisamos avaliar duas alternativas:
+    - obter uma conta Apple Developer e fazer deploy iOS oficial;
+    - ou migrar o servidor para um app Android que possa ser instalado de forma definitiva.
+6.  Executar o app no celular da Mila; ele servirá a PWA localmente e gerará o QR code para as clientes.
+7.  O PWA não precisa ser publicado em servidor público, pois será servido pelo app localmente.
 
 ### Observações
 - O deploy principal é a instalação do app servidor no celular da Mila.
-- Se a conta Apple Developer não estiver disponível, precisamos validar outra plataforma ou método de distribuição antes de seguir com a stack iOS.
+- A solução de build com Apple ID gratuito não é aceitável para o app servidor definitivo.
+- Precisamos decidir se vamos viabilizar o deploy iOS oficial ou mover o servidor para Android.
 - O código fonte e as releases podem ser mantidos no GitHub.
-- Se quiser, podemos também incluir um script de build e um release no GitHub para versão futura.
+- Vamos documentar essa decisão e retornar amanhã.

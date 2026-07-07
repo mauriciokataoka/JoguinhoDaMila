@@ -12,7 +12,7 @@ Um jogo infantil multiplayer em rede para crianças.
 - **Formato:** App nativo iOS com servidor Go embutido.
 - **Função:** Serve a PWA aos clientes, expõe API de jogo e gera QR code para conexão.
 - **Deploy:** Atualização e distribuição apenas do app da Mila.
-- **Nota:** Não dispomos de conta Apple Developer no momento; é preciso avaliar alternativas de distribuição ou assinatura para viabilizar o deploy iOS.
+- **Nota:** Não dispomos de conta Apple Developer no momento; o app servidor precisa ser definitivo e, portanto, é preciso avaliar alternativas de deploy iOS oficiais ou migrar para Android.
 
 ### Requisitos do Cliente
 - **Plataforma:** PWA acessada por navegador móvel.
