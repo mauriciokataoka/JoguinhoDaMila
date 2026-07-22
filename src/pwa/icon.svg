@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" fill="#c2185b"/>
+  <path d="M96 144s-44-28-44-66a30 30 0 0 1 44-26 30 30 0 0 1 44 26c0 38-44 66-44 66z" fill="#ffe4ee"/>
+  <g transform="rotate(-12 96 96)">
+    <rect x="40" y="84" width="112" height="24" fill="#c2185b" stroke="#ffe4ee" stroke-width="2"/>
+    <text x="96" y="102" font-family="-apple-system, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#ffe4ee" text-anchor="middle">JOGUINHO DA MILA</text>
+  </g>
+</svg>

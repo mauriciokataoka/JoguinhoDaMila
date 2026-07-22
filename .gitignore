@@ -4,3 +4,7 @@ node_modules/
 dist/
 build/
 .env
+src/api/data/*.sqlite
+src/api/data/*.sqlite-journal
+src/api/data/*.sqlite-wal
+src/api/data/*.sqlite-shm

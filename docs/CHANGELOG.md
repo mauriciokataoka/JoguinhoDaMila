@@ -2,23 +2,32 @@
 
 # Changelog
 
-## [Unreleased]
-### Changed
-- **Transporte (P2P → polling HTTP):** a iteração anterior propôs P2P via WebRTC DataChannel; reconsiderada a favor de **polling HTTP a 1s** entre cliente e servidor.
-- **Parâmetro do host:** `?mila` (typo `?mmila` corrigido).
-- **Multi-sala desde o início:** o servidor gerencia múltiplas salas desde o início (não singleton). Mila cria salas via `+` na barra de abas; pode mover clientes entre salas (`→`) ou banir (`X`).
-- **Admin token rotacionável:** o valor de `?mila=<token>` vive em `config.php` no servidor. Rotação sem deploy — editar o arquivo invalida o token antigo. A PWA suporta digitar/colar o novo token e salvar em `localStorage`.
-
+## [0.1.0] - 2026-07-22
 ### Added
-- ADR-005: cPanel shared + PWA + polling HTTP (accepted) — agora inclui multi-sala e admin token.
-- **Parâmetro de nome (`?nome=<valor>`)** para clientes: pré-preenche o nickname no onboarding, permitindo que o adulto configure o nome de cada kid na instalação da PWA.
-- **Mila é a admin:** a URL dela é `?mila=<token>` (sem `?nome=`). O nome "Mila" é o nome padrão da role (customizável em `config.php` via `$ADMIN_NAME` se necessário).
-- **Mecanismo de entrada de clientes nas salas — regra "última sala":** Mila sempre começa com a sala 1; quando cria uma nova via `+`, ela vira a "última sala". Todo novo cliente que faz `POST /join` é auto-atribuído à sala mais recentemente criada. Os kids já conectados ficam onde estão; Mila pode movê-los com `→` se quiser.
-- **Decisões de implementação:**
-  - **JS da PWA:** vanilla (HTML/CSS/JS puro).
-  - **Router PHP:** híbrido (`api.php` como entry point + `endpoints/*.php` para a lógica).
-  - **Service worker:** incluído (`sw.js` com cache-first p/ shell, network-first p/ API). Atende o requisito de offline do [[DESIGN]].
+- **Backend PHP (cPanel):**
+  - `src/api/config.php` com `$ADMIN_TOKEN` (rotacionável) e `$ADMIN_NAME`.
+  - `src/api/db.php` com conexão PDO/SQLite e schema (rooms, players, bans, ranking).
+  - `src/api/api.php` como entry point / router.
+  - 6 endpoints em `src/api/endpoints/`:
+    - `check_admin` — valida o token do admin.
+    - `join` — atribui cliente à última sala (regra ADR-005).
+    - `state` — polling de estado para o cliente (1s).
+    - `action` — ações do cliente (sugerir letra, sair).
+    - `admin_state` — polling de estado para o admin (lista de salas e clientes).
+    - `admin_action` — ações do admin (criar sala, iniciar, encerrar, resetar, mover cliente, banir).
+- **PWA vanilla (HTML/CSS/JS):**
+  - `src/pwa/index.html` — shell único; detecta `?mila=` (admin) ou `?nome=` (cliente).
+  - `src/pwa/app.js` — polling 1s, UI admin (abas, X, →, +) e UI cliente (palavra mascarada, timer, input de letra).
+  - `src/pwa/style.css` — tema rosa (alinhado ao DESIGN), modal inicial com coração e faixa diagonal.
+  - `src/pwa/manifest.json` + `icon.svg` — PWA instalável.
+  - `src/pwa/sw.js` — service worker (cache-first p/ shell, network-first p/ `/api/*`).
+- **Lógica de forca:** máscara da palavra (espaços e hífens visíveis), validação de letra, detecção de vitória/derrota, ranking acumulado.
+- **Multi-sala:** criação via `+`, mover cliente entre salas (`→`), banir (`X`).
+- **Regras de turno:** 10s por jogador, servidor controla ordem e timer.
 
-### Accepted
-- ADR-005 ratificada: polling HTTP a 1s entre cliente e servidor cPanel.
-- **Runtime do backend:** PHP (única opção disponível no cPanel do projeto).
+### Changed
+- Documentação ampliada (PRD, ARCHITECTURE, DESIGN, ROADMAP) refletindo a arquitetura final.
+
+### Notes
+- v0.1.0 é a primeira versão funcional end-to-end. Pronto para deploy no cPanel e teste em dispositivos reais.
+- `$ADMIN_TOKEN` em `config.php` precisa ser trocado para um valor seguro antes do deploy de produção.

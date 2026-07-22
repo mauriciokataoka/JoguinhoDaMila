@@ -1,0 +1,16 @@
+{
+  "name": "Joguinho da Mila",
+  "short_name": "Mila",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffe4ee",
+  "theme_color": "#ff6fa3",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

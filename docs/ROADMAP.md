@@ -15,27 +15,23 @@
 - [x] ~~Runtime do backend~~ — PHP (única opção no cPanel).
 - [x] ~~Modelo de acesso à sala (singleton vs código)~~ — **multi-sala desde o início** (decisão do usuário).
 - [x] ~~Parâmetro do host~~ — `?mila=<token>`, com valor em `config.php` (rotacionável).
-- [x] ~~Confirmar o padrão do install da Mila~~ — **Mila é a admin**: URL `?mila=<token>` (sem `?nome=`); nome exibido "Mila" por padrão (customizável em `config.php` via `$ADMIN_NAME`).
 - [x] ~~Definir o mecanismo de atribuição de clientes a salas~~ — **regra "última sala"**: todo novo cliente entra na sala mais recentemente criada; Mila começa com a sala 1 e cria mais via `+`.
 - [x] ~~JS da PWA~~ — **vanilla** (HTML/CSS/JS puro).
 - [x] ~~Router PHP~~ — **opção C (híbrido)**: `api.php` como entry point + `endpoints/*.php` para a lógica.
 - [x] ~~Service worker~~ — **incluído**: `sw.js` com cache-first p/ shell e network-first p/ API.
-- [ ] Suporte a `?nome=<valor>` na PWA cliente (pré-preenchimento do nickname; configurado pelo adulto na instalação).
-- [ ] Criar `src/` com estrutura inicial (pwa/, api/).
-- [ ] Criar `config.php` com `$ADMIN_TOKEN` placeholder e rotação documentada.
-- [ ] Implementar `/api/check-admin` (valida token).
-- [ ] Implementar `/api/admin/state` e `/api/admin/action` (criar sala, mover, banir, iniciar).
-- [ ] Implementar `/state` e `/action` para clientes (entrar na sala, polling, sugerir letra).
-- [ ] Implementar persistência SQLite (ranking, bans, histórico).
-- [ ] Implementar modal de inicialização offline (coração rosa claro, fundo rosa escuro, faixa diagonal com "Joguinho da Mila").
-- [ ] Implementar UI admin com abas (X, →, +) e UI cliente.
-- [ ] Integrar a forca: Mila escolhe palavra, fluxo de turno, validação, ranking.
+- [x] **v0.1.0** — implementação inicial completa: backend PHP + PWA vanilla (release 0.1.0 em 2026-07-22).
 
-## Bloqueador crítico
-- **Plataforma do servidor:** resolvida (ADR-005 Accepted) — cPanel shared (PHP) + PWA + polling HTTP + multi-sala + admin token rotacionável + regra "última sala".
-- **Decisões de implementação fechadas:** PWA vanilla (HTML/CSS/JS); router PHP híbrido (`api.php` + `endpoints/*.php`); service worker incluído (`sw.js` com cache-first p/ shell, network-first p/ API).
-- **Sem bloqueador** restante. A partir daqui é implementação.
+## Refinamentos pendentes (não-bloqueantes)
+- [ ] Trocar `$ADMIN_TOKEN` em `config.php` para um valor seguro antes do deploy de produção.
+- [ ] Gerar ícones PNG (192x192, 512x512) e atualizar `manifest.json` (atualmente só SVG).
+- [ ] Pausar polling quando a aba está em background (`visibilitychange`) — economizar bateria.
+- [ ] Adicionar `ETag` / `If-None-Match` para 304 quando o estado não mudou.
+- [ ] Adicionar testes automatizados (PHP unit + JS smoke).
+- [ ] CI/CD para deploy automático no cPanel.
+- [ ] Animações e polimento visual (transições, feedback de acerto/erro).
+- [ ] Documentar processo de rotação do admin token no `README` (quando, como, por quê).
 
-## Planejamento imediato
-- Decidir o **mecanismo de atribuição de clientes a salas** antes de implementar o endpoint `/join`.
-- Em paralelo: criar a estrutura `src/`, o `config.php`, o modal de inicialização e a UI admin (que não dependem do mecanismo de atribuição).
+## Próximos marcos
+- **v0.2.0:** deploy no cPanel de produção; teste em dispositivos reais; feedback da Mila.
+- **v0.3.0:** refinamentos visuais e de UX.
+- **v1.0.0:** estável para uso regular.
