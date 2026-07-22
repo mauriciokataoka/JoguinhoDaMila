@@ -22,7 +22,8 @@
 ### UI Admin (Mila)
 - A admin é identificada pelo **token na URL** (`?mila=<token>`); o nome exibido na UI é **"Mila"** por padrão (customizável em `config.php`).
 - Barra de **abas** no topo, uma por sala. Cada aba mostra o ID da sala (ex.: "1", "2", "3").
-- A **última aba é sempre `+`** — clicar cria uma nova sala.
+- A **última aba é sempre `+`** — clicar cria uma nova sala. A sala recém-criada vira a **"última sala"** (destino padrão dos próximos clientes que fizerem `POST /join`).
+- A lista de clientes de uma sala é atualizada em tempo real via polling a 1s.
 - Conteúdo da aba selecionada:
   - **Cabeçalho:** campo para a palavra secreta + campo para o limite de tentativas (visível quando a sala está "aguardando"); botão "Iniciar".
   - **Lista de clientes** na sala:

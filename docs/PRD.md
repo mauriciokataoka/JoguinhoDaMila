@@ -56,7 +56,7 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A ho
 #### Fluxo Cliente (criança)
 1.  A criança abre a PWA (URL base, sem parâmetro).
 2.  A PWA pede um nickname na primeira vez e recebe um token; salva em `localStorage`. Se a URL contém `?nome=<valor>`, o nickname vem pré-preenchido (configurado pelo adulto na instalação) e o modal pode ser pulado ou só confirmado.
-3.  A PWA faz `POST /join` para entrar numa sala (mecanismo de atribuição a definir).
+3.  A PWA faz `POST /join`; o servidor atribui o cliente à **última sala criada** (a mais recente). Se for a única sala (sala 1), entra direto.
 4.  A criança vê a tela da sala: "Aguardando Mila iniciar o jogo".
 5.  Quando Mila inicia, a criança vê a palavra mascarada e espera sua vez.
 6.  Na sua vez, digita uma letra e envia.
@@ -68,7 +68,8 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A ho
 - **Admin:** token validado no carregamento. Se rotacionado, a PWA mostra campo para digitar o novo (salva em `localStorage` para próximos loads).
 
 ### Regras de Jogo e Conexão
-- **Salas:** múltiplas desde o início; Mila cria via `+`.
+- **Salas:** múltiplas desde o início; Mila sempre começa com a sala 1 e cria mais via `+`.
+- **Atribuição de clientes:** todo novo cliente entra automaticamente na **última sala criada** (a mais recente). Mila cria uma nova sala via `+` quando quer que os próximos kids entrem nela. Os kids já conectados ficam onde estão; Mila pode movê-los com **→** se quiser.
 - **Multiplayer por sala:** quantos clientes estiverem na sala antes do início.
 - **Ordem de Turno:** definida pela ordem de chegada na sala; o servidor coordena.
 - **Ações do admin (Mila):**

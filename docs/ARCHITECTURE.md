@@ -62,7 +62,7 @@
 - Admin cria salas via `POST /api/admin/action {type: 'create_room'}`; recebe o ID da nova sala.
 - Admin move cliente: `POST /api/admin/action {type: 'move_client', client_token: ..., to_room: ...}`.
 - Admin bane: `POST /api/admin/action {type: 'ban', client_token: ...}`.
-- Acesso de cliente a uma sala: **mecanismo a definir** (auto-assign, pick-from-list, ou code).
+- Acesso de cliente a uma sala: **regra "última sala"** — `POST /join` sempre atribui à sala mais recentemente criada (a de maior ID, equivalente à aba mais à direita antes do `+`). Se a última sala está bloqueada/encerrada, o servidor rejeita o join (decisão de UX padrão; refinável).
 
 ### Otimizações pendentes
 - Pausar polling quando a aba está em background (`visibilitychange`) — economizar bateria.

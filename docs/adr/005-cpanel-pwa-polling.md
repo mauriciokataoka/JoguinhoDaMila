@@ -71,12 +71,13 @@ Mesma PWA para admin e clientes. O papel é detectado pela presença e validade 
 - **Iniciar jogo:** Mila escolhe a palavra e o limite de tentativas para a sala em que está, depois clica "Iniciar". A sala passa para o estado "em jogo".
 - **Fechar/encerrar sala:** a definir (provavelmente um X na própria aba, fora da lista de clientes).
 
-### 7. Acesso à sala pelo cliente
-- **Pendente:** o mecanismo de atribuição de um cliente novo a uma sala. Opções:
-  - **Auto-assign:** o servidor coloca o cliente na primeira sala com espaço (ou na "sala padrão" = sala 1).
-  - **Pick-from-list:** o cliente vê a lista de salas existentes e escolhe uma.
-  - **Code:** Mila compartilha um código/URL da sala (ex.: `?sala=2`); o cliente entra com o código.
-  - Decisão a tomar antes do stub da PWA cliente.
+### 7. Acesso à sala pelo cliente (regra "última sala")
+- Mila **sempre começa com a sala 1** (criada automaticamente no primeiro boot do servidor ou no primeiro acesso da admin).
+- Quando Mila cria uma nova sala via `+`, ela vira a **"última sala"** (a mais recente).
+- **Todo novo cliente** (que abre a PWA sem `?mila=` e faz `POST /join`) é **auto-atribuído à última sala** — a mais recentemente criada.
+- Implicação prática: Mila cria uma sala nova via `+` quando quer que os próximos kids entrem nela (ex.: "vou começar uma partida nova, crio a sala 2, e os novos vão pra lá"). Os kids já conectados ficam onde estão; Mila pode movê-los com **→** se quiser balancear.
+- A regra "última sala" elimina a necessidade de pick-from-list ou codes para o caso comum: o adulto cria a sala, os kids vão pra lá.
+- **Comportamento quando a última sala está bloqueada/encerrada** (a definir na implementação): rejeitar o `POST /join` com erro, redirecionar para a penúltima sala disponível, ou criar uma sala nova automaticamente. Decisão de UX a tomar quando implementarmos; o default seguro é **rejeitar com erro** (a Mila cria uma nova sala se quiser).
 
 ### 8. Regras de jogo
 - Forca clássica: cada jogador, na sua vez, **sugere uma única letra**.
@@ -100,4 +101,4 @@ Mesma PWA para admin e clientes. O papel é detectado pela presença e validade 
   - URL com `?mila=<token>` é, na prática, um *bearer token* na URL — se alguém printar a tela, o token vaza. Mitigação: rotação + a PWA pode ofuscar o token na URL após validar (mas isso quebra o reload).
 
 ## Pendente de decisão
-- **Mecanismo de atribuição de clientes a salas:** auto-assign vs pick-from-list vs code.
+- _(vazio — decisões arquiteturais e de mecanismo de sala resolvidas nesta iteração)_

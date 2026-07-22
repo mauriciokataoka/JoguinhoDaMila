@@ -16,7 +16,7 @@
 - [x] ~~Modelo de acesso à sala (singleton vs código)~~ — **multi-sala desde o início** (decisão do usuário).
 - [x] ~~Parâmetro do host~~ — `?mila=<token>`, com valor em `config.php` (rotacionável).
 - [x] ~~Confirmar o padrão do install da Mila~~ — **Mila é a admin**: URL `?mila=<token>` (sem `?nome=`); nome exibido "Mila" por padrão (customizável em `config.php` via `$ADMIN_NAME`).
-- [ ] **BLOQUEADOR leve**: Definir o mecanismo de atribuição de clientes a salas (auto-assign vs pick-from-list vs code).
+- [x] ~~Definir o mecanismo de atribuição de clientes a salas~~ — **regra "última sala"**: todo novo cliente entra na sala mais recentemente criada; Mila começa com a sala 1 e cria mais via `+`.
 - [ ] Suporte a `?nome=<valor>` na PWA cliente (pré-preenchimento do nickname; configurado pelo adulto na instalação).
 - [ ] Criar `src/` com estrutura inicial (pwa/, api/).
 - [ ] Criar `config.php` com `$ADMIN_TOKEN` placeholder e rotação documentada.
@@ -29,8 +29,8 @@
 - [ ] Integrar a forca: Mila escolhe palavra, fluxo de turno, validação, ranking.
 
 ## Bloqueador crítico
-- **Plataforma do servidor:** resolvida (ADR-005 Accepted) — cPanel shared (PHP) + PWA + polling HTTP + multi-sala + admin token rotacionável.
-- **Sem bloqueador arquitetural** restante. Itens abertos (mecanismo de atribuição de clientes; padrão do install da Mila) são escolhas de UX que podem ser tomadas em paralelo com a codificação.
+- **Plataforma do servidor:** resolvida (ADR-005 Accepted) — cPanel shared (PHP) + PWA + polling HTTP + multi-sala + admin token rotacionável + regra "última sala".
+- **Sem bloqueador arquitetural** restante. Todas as decisões de design foram tomadas; a partir daqui é implementação.
 
 ## Planejamento imediato
 - Decidir o **mecanismo de atribuição de clientes a salas** antes de implementar o endpoint `/join`.
