@@ -17,6 +17,9 @@
 - [x] ~~Parâmetro do host~~ — `?mila=<token>`, com valor em `config.php` (rotacionável).
 - [x] ~~Confirmar o padrão do install da Mila~~ — **Mila é a admin**: URL `?mila=<token>` (sem `?nome=`); nome exibido "Mila" por padrão (customizável em `config.php` via `$ADMIN_NAME`).
 - [x] ~~Definir o mecanismo de atribuição de clientes a salas~~ — **regra "última sala"**: todo novo cliente entra na sala mais recentemente criada; Mila começa com a sala 1 e cria mais via `+`.
+- [x] ~~JS da PWA~~ — **vanilla** (HTML/CSS/JS puro).
+- [x] ~~Router PHP~~ — **opção C (híbrido)**: `api.php` como entry point + `endpoints/*.php` para a lógica.
+- [x] ~~Service worker~~ — **incluído**: `sw.js` com cache-first p/ shell e network-first p/ API.
 - [ ] Suporte a `?nome=<valor>` na PWA cliente (pré-preenchimento do nickname; configurado pelo adulto na instalação).
 - [ ] Criar `src/` com estrutura inicial (pwa/, api/).
 - [ ] Criar `config.php` com `$ADMIN_TOKEN` placeholder e rotação documentada.
@@ -30,7 +33,8 @@
 
 ## Bloqueador crítico
 - **Plataforma do servidor:** resolvida (ADR-005 Accepted) — cPanel shared (PHP) + PWA + polling HTTP + multi-sala + admin token rotacionável + regra "última sala".
-- **Sem bloqueador arquitetural** restante. Todas as decisões de design foram tomadas; a partir daqui é implementação.
+- **Decisões de implementação fechadas:** PWA vanilla (HTML/CSS/JS); router PHP híbrido (`api.php` + `endpoints/*.php`); service worker incluído (`sw.js` com cache-first p/ shell, network-first p/ API).
+- **Sem bloqueador** restante. A partir daqui é implementação.
 
 ## Planejamento imediato
 - Decidir o **mecanismo de atribuição de clientes a salas** antes de implementar o endpoint `/join`.

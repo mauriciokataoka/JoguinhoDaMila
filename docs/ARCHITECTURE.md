@@ -31,12 +31,13 @@
 ```
 
 ### Stack
-- **Frontend (PWA):** HTML/CSS/JS vanilla ou framework leve (a decidir).
+- **Frontend (PWA):** **HTML/CSS/JS vanilla**, com `manifest.json` (instalabilidade) e `sw.js` (service worker: cache-first p/ shell, network-first p/ `/api/*`).
 - **Backend (servidor de jogo):** **PHP** (única opção no cPanel).
+- **Router PHP:** **híbrido** — `src/api/api.php` como entry point público + `src/api/endpoints/*.php` para a lógica de cada endpoint.
 - **Transporte:** HTTP request/response; **polling a 1s** pelos clientes e pelo admin.
 - **Sem WebSocket, sem WebRTC, sem STUN/TURN.**
 - **Persistência:** SQLite via PDO em PHP.
-- **Config:** `config.php` com `$ADMIN_TOKEN`.
+- **Config:** `config.php` com `$ADMIN_TOKEN` e `$ADMIN_NAME`.
 
 ### URLs e domínios
 - Produção: `https://joguinhodamila.kataoka.com.br`
