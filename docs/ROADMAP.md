@@ -13,7 +13,7 @@
 - [x] ~~Criar ADR de regras de sessão~~ — ADR-003 mantida (Accepted); atualizada para "uma letra por turno".
 - [x] ~~Modelo de rede (mesmo Wi-Fi vs cross-network)~~ — irrelevante: polling HTTP funciona em qualquer rede.
 - [ ] Definir o modelo de acesso à sala: singleton (uma sala global) vs código de sala por Mila.
-- [ ] Confirmar runtime do backend no cPanel (Node, PHP ou Python).
+- [x] Confirmar runtime do backend no cPanel — **PHP** (única opção disponível).
 - [ ] Desenhar protocolo de API (rotas `/state`, `/action`, payloads, versionamento).
 - [ ] Implementar modal de inicialização offline (coração rosa claro, fundo rosa escuro, faixa diagonal com "Joguinho da Mila").
 - [ ] Stub do backend de jogo no cPanel (Hello World + endpoints básicos).

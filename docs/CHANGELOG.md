@@ -12,6 +12,7 @@
 
 ### Accepted
 - ADR-005 ratificada: polling HTTP a 1s entre cliente e servidor cPanel. Alternativa P2P via WebRTC foi descartada por simplicidade e robustez (rede local não é necessária para um jogo de turnos de 10s).
+- **Runtime do backend:** PHP (única opção disponível no cPanel do projeto; sem Node.js nem Python).
 
 ### Note
 - A ADR-005 foi renomeada de `005-cpanel-pwa-p2p.md` para `005-cpanel-pwa-polling.md` para refletir a nova abordagem de transporte.

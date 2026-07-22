@@ -25,10 +25,10 @@
 
 ### Stack candidato
 - **Frontend (PWA):** HTML/CSS/JS vanilla ou framework leve (a decidir).
-- **Backend (servidor de jogo):** Node, PHP ou Python — a confirmar com o cPanel.
+- **Backend (servidor de jogo):** **PHP** (única opção disponível no cPanel do projeto).
 - **Transporte:** HTTP request/response; **polling a 1s** pelos clientes.
 - **Sem WebSocket, sem WebRTC, sem STUN/TURN.**
-- **Persistência:** SQLite ou arquivo JSON no cPanel (depende do runtime).
+- **Persistência:** SQLite via PDO em PHP.
 
 ### URLs e domínios
 - Produção: `https://joguinhodamila.kataoka.com.br`
@@ -47,7 +47,6 @@
 - `ETag` / `If-None-Match` para o servidor retornar 304 quando nada mudou — economizar banda.
 
 ### Pendente
-- Definir stack concreta do backend (Node/PHP/Python) conforme cPanel.
 - Definir protocolo de API (rotas, payloads, versionamento).
 - Definir formato de token e sessão.
 - Decidir modelo de acesso à sala (singleton vs código).

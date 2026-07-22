@@ -24,6 +24,6 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A PW
 ## Deploy
 1. O código fica no GitHub (repositório público).
 2. Build da PWA é estático (HTML/CSS/JS); sobe via FTP/SSH no cPanel.
-3. Backend de jogo roda no cPanel (linguagem a confirmar com a hospedagem).
+3. Backend de jogo roda no cPanel em **PHP** (única opção disponível na hospedagem).
 4. Let's Encrypt ativa o HTTPS no domínio.
 5. Mila acessa `https://joguinhodamila.kataoka.com.br/?mila` para ser host; crianças acessam a URL base.

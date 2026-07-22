@@ -13,7 +13,7 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A ho
 - **Função 1:** serve a PWA estática para todos os clientes.
 - **Função 2:** é o **servidor de jogo** — mantém o estado autoritativo da partida e expõe API HTTP para os clientes.
 - **Função 3:** persiste ranking e histórico de partidas por nickname.
-- **Stack do backend:** a confirmar conforme o que o cPanel aceita (Node, PHP ou Python).
+- **Stack do backend:** PHP (única opção disponível no cPanel do projeto).
 - **Deploy:** upload via FTP/SSH no cPanel; sem rebuild semanal.
 
 ### Requisitos do Cliente
@@ -24,7 +24,7 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A ho
 - **Comunicação:** `GET /state` a cada 1s; `POST /action` para sugerir letra, desistir, iniciar/encerrar (host), kick (host).
 
 ### Stack Proposta
-- **Host público:** cPanel shared (Node/PHP/Python) com HTTPS.
+- **Host público:** cPanel shared (**PHP**) com HTTPS.
 - **Cliente:** PWA (HTML/CSS/JS, instalável).
 - **Transporte:** polling HTTP a 1s (sem WebSocket, sem WebRTC, sem STUN/TURN).
 - **Host do jogo:** a PWA da Mila é o **cliente host**; o **servidor cPanel** é a fonte autoritativa do estado.

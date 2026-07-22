@@ -34,8 +34,9 @@ Iteração anterior propôs **P2P via WebRTC DataChannel**. O usuário explicito
 ### 1. Host público
 cPanel shared em `https://joguinhodamila.kataoka.com.br`:
 - serve a PWA estática sobre HTTPS (Let's Encrypt);
-- expõe uma **API HTTP** que é o **servidor de jogo** (mantém o estado autoritativo da partida);
-- persiste ranking e histórico de partidas.
+- expõe uma **API HTTP em PHP** que é o **servidor de jogo** (mantém o estado autoritativo da partida);
+- persiste ranking e histórico de partidas (SQLite via PDO).
+- **Stack do backend:** **PHP** — única opção disponível no cPanel do projeto (sem Node.js nem Python).
 
 ### 2. Transporte: polling HTTP (sem WebSocket, sem P2P)
 - A cada **1 segundo**, cada cliente faz `GET /state?sala=…` para receber o estado atual (palavra mascarada, tentativas restantes, de quem é a vez, timer, lista de jogadores).
@@ -77,4 +78,3 @@ Mesma PWA para Mila e crianças. O papel é detectado pelo **parâmetro `?mila`*
 
 ## Pendente de decisão
 - **Modelo de acesso à sala:** singleton (uma sala global) ou código de sala por Mila.
-- **Runtime do backend no cPanel:** Node, PHP ou Python — a confirmar com a hospedagem.
