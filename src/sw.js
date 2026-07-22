@@ -1,4 +1,4 @@
-const CACHE_NAME = 'joguinho-v3';
+const CACHE_NAME = 'joguinho-v4';
 const SHELL = [
   './',
   './index.html',

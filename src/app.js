@@ -144,6 +144,13 @@ function renderInitialModal() {
     const title = el('h2', { class: 'modal-title' }, 'Qual é o seu nome?');
     const input = el('input', { class: 'modal-input', type: 'text', placeholder: 'Seu nome', maxlength: '30', autofocus: true });
     const error = el('div', { class: 'error' });
+    const tryJoin = async () => {
+      try {
+        await joinRoom();
+      } catch (e) {
+        error.textContent = 'Erro: ' + (e.error || 'desconhecido');
+      }
+    };
     const submit = () => {
       const name = input.value.trim();
       if (!name) { error.textContent = 'Digite um nome'; return; }
