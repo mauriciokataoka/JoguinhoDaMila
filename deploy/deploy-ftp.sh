@@ -71,6 +71,7 @@ mirror $MIRROR_OPTS \
   --exclude .DS_Store \
   --exclude .git/ \
   --exclude 'api/data/*.sqlite*' \
+  --exclude '.well-known/' \
   '$SOURCE' .
 chmod 755 api/data
 bye

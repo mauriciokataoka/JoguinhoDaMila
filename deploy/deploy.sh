@@ -60,6 +60,7 @@ rsync "${RSYNC_OPTS[@]}" \
   --exclude '.DS_Store' \
   --exclude '.git/' \
   --exclude 'api/data/*.sqlite*' \
+  --exclude '.well-known/' \
   -e "$SSH_CMD" \
   "$SOURCE" "$SSH_USER@$SSH_HOST:$REMOTE_PATH/"
 
