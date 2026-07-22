@@ -318,6 +318,12 @@ function renderAdminContent() {
     onclick: createRoom,
     title: 'Criar nova sala',
   }, '+'));
+  tabs.appendChild(el('button', {
+    class: 'tab',
+    style: { marginLeft: 'auto', background: 'rgba(255,255,255,0.25)' },
+    title: 'Sair do modo admin (volta ao modo cliente)',
+    onclick: logoutAdmin,
+  }, 'Sair'));
   root.appendChild(tabs);
 
   const main = el('div', { class: 'main' });
@@ -486,6 +492,14 @@ async function createRoom() {
   } catch (e) {
     alert('Erro: ' + (e.error || 'desconhecido'));
   }
+}
+
+function logoutAdmin() {
+  if (!confirm('Sair do modo admin? Neste dispositivo você voltará ao modo cliente (pode entrar como Isla, por exemplo).')) return;
+  stopPolling();
+  localStorage.removeItem('joguinho_admin_token');
+  adminToken = null;
+  location.reload();
 }
 
 async function moveClient(clientToken, toRoom) {
