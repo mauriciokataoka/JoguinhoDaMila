@@ -8,24 +8,28 @@
 - [x] Se for software: definir a stack.
 - [x] Definir funcionalidades e regras de jogo (PRD).
 - [x] Especificar fluxo servidor/cliente e tela de sala de espera.
-- [x] ~~BLOQUEADOR iOS vs Android~~ — resolvido pelo pivô para cPanel + PWA + polling (ADR-005, proposed).
+- [x] ~~BLOQUEADOR iOS vs Android~~ — resolvido pelo pivô para cPanel + PWA + polling (ADR-005, accepted).
 - [x] ~~Criar ADR de fallback de IP~~ — ADR-002 superseded; HTTPS do cPanel elimina o fallback manual.
 - [x] ~~Criar ADR de regras de sessão~~ — ADR-003 mantida (Accepted); atualizada para "uma letra por turno".
 - [x] ~~Modelo de rede (mesmo Wi-Fi vs cross-network)~~ — irrelevante: polling HTTP funciona em qualquer rede.
-- [ ] Definir o modelo de acesso à sala: singleton (uma sala global) vs código de sala por Mila.
-- [x] Confirmar runtime do backend no cPanel — **PHP** (única opção disponível).
-- [ ] Desenhar protocolo de API (rotas `/state`, `/action`, payloads, versionamento).
+- [x] ~~Runtime do backend~~ — PHP (única opção no cPanel).
+- [x] ~~Modelo de acesso à sala (singleton vs código)~~ — **multi-sala desde o início** (decisão do usuário).
+- [x] ~~Parâmetro do host~~ — `?mila=<token>`, com valor em `config.php` (rotacionável).
+- [ ] **BLOQUEADOR leve**: Definir o mecanismo de atribuição de clientes a salas (auto-assign vs pick-from-list vs code).
+- [ ] Criar `src/` com estrutura inicial (pwa/, api/).
+- [ ] Criar `config.php` com `$ADMIN_TOKEN` placeholder e rotação documentada.
+- [ ] Implementar `/api/check-admin` (valida token).
+- [ ] Implementar `/api/admin/state` e `/api/admin/action` (criar sala, mover, banir, iniciar).
+- [ ] Implementar `/state` e `/action` para clientes (entrar na sala, polling, sugerir letra).
+- [ ] Implementar persistência SQLite (ranking, bans, histórico).
 - [ ] Implementar modal de inicialização offline (coração rosa claro, fundo rosa escuro, faixa diagonal com "Joguinho da Mila").
-- [ ] Stub do backend de jogo no cPanel (Hello World + endpoints básicos).
-- [ ] Stub da PWA (carrega, detecta `?mila`, faz polling, mostra estado).
-- [ ] Integrar a forca: Mila escolhe palavra, fluxo de turno via polling, validação, ranking.
-- [x] Documentar regras de partida — ADR-003.
+- [ ] Implementar UI admin com abas (X, →, +) e UI cliente.
+- [ ] Integrar a forca: Mila escolhe palavra, fluxo de turno, validação, ranking.
 
 ## Bloqueador crítico
-- **Plataforma do servidor:** resolvida (ADR-005 Accepted) — cPanel shared + PWA + polling HTTP.
-- **Sem bloqueador arquitetural** no momento. Itens abertos (modelo de sala, runtime, protocolo) são escolhas de implementação que podem ser feitas em paralelo com a codificação.
+- **Plataforma do servidor:** resolvida (ADR-005 Accepted) — cPanel shared (PHP) + PWA + polling HTTP + multi-sala + admin token rotacionável.
+- **Sem bloqueador arquitetural** restante. O único item aberto (mecanismo de atribuição de clientes) é uma escolha de UX que pode ser tomada em paralelo com a codificação.
 
 ## Planejamento imediato
-- Decidir (1) modelo de acesso à sala e (2) runtime do backend antes de iniciar o stub.
-- Em paralelo: começar o modal de inicialização (independe de rede/servidor).
-- Stub do backend + stub da PWA depois das duas decisões acima.
+- Decidir o **mecanismo de atribuição de clientes a salas** antes de implementar o endpoint `/join`.
+- Em paralelo: criar a estrutura `src/`, o `config.php`, o modal de inicialização e a UI admin (que não dependem do mecanismo de atribuição).

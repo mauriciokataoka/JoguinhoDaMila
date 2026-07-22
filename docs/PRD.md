@@ -5,62 +5,87 @@
 ## PRD (Product Requirements Document)
 
 ### Visão Geral
-Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A hospedagem pública é o **cPanel shared**, que serve a PWA via HTTPS e roda o servidor de jogo. A PWA é o único cliente; aberta com **`?mila`**, ela se transforma no **host** (Mila escolhe a palavra, controla o jogo). Abertas sem o parâmetro, as outras crianças entram como jogadoras. Cada cliente conversa com o servidor via **polling HTTP a 1s** (sem WebSocket, sem P2P). Funciona em qualquer rede.
+Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A hospedagem pública é o **cPanel shared (PHP)**, que serve a PWA via HTTPS e roda o servidor de jogo. A PWA é o único cliente, instalada uma vez por um adulto em cada dispositivo (sem parâmetros variáveis por install). Aberta com **`?mila=<token_admin>`**, a PWA se transforma no **admin** (Mila) e mostra uma UI multi-sala com abas; sem o parâmetro (ou com token inválido), a PWA é um **cliente** que entra numa sala e joga. Cada cliente conversa com o servidor via **polling HTTP a 1s** (sem WebSocket, sem P2P). O servidor gerencia **múltiplas salas desde o início**.
 
 ### Requisitos do Servidor (público)
-- **Plataforma:** cPanel shared hosting.
+- **Plataforma:** cPanel shared hosting (apenas PHP disponível).
 - **Domínio:** `joguinhodamila.kataoka.com.br` (HTTPS via Let's Encrypt, requisito para PWA instalável).
 - **Função 1:** serve a PWA estática para todos os clientes.
-- **Função 2:** é o **servidor de jogo** — mantém o estado autoritativo da partida e expõe API HTTP para os clientes.
+- **Função 2:** é o **servidor de jogo** — mantém o estado autoritativo de **múltiplas salas** e expõe API HTTP para os clientes.
 - **Função 3:** persiste ranking e histórico de partidas por nickname.
-- **Stack do backend:** PHP (única opção disponível no cPanel do projeto).
+- **Função 4:** valida o **admin token** (definido em `config.php`).
+- **Stack do backend:** PHP (única opção no cPanel).
 - **Deploy:** upload via FTP/SSH no cPanel; sem rebuild semanal.
 
 ### Requisitos do Cliente
 - **Plataforma:** PWA (qualquer navegador móvel moderno).
-- **Instalação:** Add to Home Screen no iOS ou "Instalar app" no Android — exige HTTPS (garantido pelo cPanel).
-- **Entrada:** acessa `https://joguinhodamila.kataoka.com.br`; se a URL contém `?mila`, a PWA assume o papel de **host** (Mila); senão, papel de **jogadora**.
-- **Onboarding:** primeiro modal pede nickname e exibe o token gerado (salvo em `localStorage`).
-- **Comunicação:** `GET /state` a cada 1s; `POST /action` para sugerir letra, desistir, iniciar/encerrar (host), kick (host).
+- **Instalação:** Add to Home Screen no iOS ou "Instalar app" no Android — feito uma vez por um adulto, **sem parâmetros por install** (URL base fixa).
+- **Detecção de papel:**
+  - Com `?mila=<token_válido>` → UI **admin** (Mila).
+  - Sem `?mila` ou token inválido → UI **cliente**.
+- **Onboarding (cliente):** primeiro modal pede nickname e exibe o token gerado (salvo em `localStorage`).
+- **Comunicação (cliente):** `GET /state?sala=…` a cada 1s; `POST /action` para sugerir letra, desistir.
+- **Comunicação (admin):** `GET /api/admin/state` a cada 1s (lista de salas e clientes); `POST /api/admin/action` para criar sala, escolher palavra, iniciar, mover, banir.
+- **Token do admin:** validado no carregamento; pode ser digitado manualmente na PWA e salvo em `localStorage` (para suportar rotação sem reinstalar).
+
+### Requisitos de Segurança
+- O **admin token** vive em `config.php` no servidor e é rotacionável sem deploy.
+- O link com `?mila=<token>` é a credencial admin — se vazar, basta editar `config.php`.
+- Não há autenticação de cliente além do token de jogador (gerado no primeiro acesso).
 
 ### Stack Proposta
 - **Host público:** cPanel shared (**PHP**) com HTTPS.
 - **Cliente:** PWA (HTML/CSS/JS, instalável).
 - **Transporte:** polling HTTP a 1s (sem WebSocket, sem WebRTC, sem STUN/TURN).
-- **Host do jogo:** a PWA da Mila é o **cliente host**; o **servidor cPanel** é a fonte autoritativa do estado.
+- **Admin token:** valor em `config.php`; validado por endpoint `/api/check-admin`.
 
 ### Fluxo de Usuário e Conexão
-1.  Mila abre `https://joguinhodamila.kataoka.com.br/?mila` no celular dela; a PWA carrega, identifica o papel de host e pede a palavra secreta e o limite de tentativas.
-2.  Mila compartilha o link (sem `?mila`, ou com código de sala — a definir) com as outras crianças.
-3.  Cada criança abre o link, a PWA carrega, pede um nickname na primeira vez e recebe um token; o token fica salvo em `localStorage`.
-4.  Cada cliente entra na sala do servidor; o servidor atribui um turno com base na ordem de chegada.
-5.  A PWA faz polling de estado a cada 1s. As crianças veem a sala de espera até Mila iniciar a partida.
-6.  Mila inicia a partida; o estado passa a incluir a palavra mascarada, tentativas e o turno atual.
-7.  Cada jogador, na sua vez, digita **uma única letra** e a PWA faz `POST /action`. O servidor valida, atualiza o estado e o próximo turno.
-8.  Timer de 10s por turno: se o jogador não agir, o servidor passa a vez.
-9.  O jogo termina quando a palavra é descoberta ou quando a Mila encerra/reinicia.
-10.  Ao final, todos veem o modal de resultado; a PWA da Mila exibe botão para reiniciar.
+
+#### Fluxo Admin (Mila)
+1.  Mila abre `https://joguinhodamila.kataoka.com.br/?mila=<token_admin>` no celular dela.
+2.  A PWA carrega, valida o token via `/api/check-admin`. Se inválido, mostra campo para digitar/colar o novo token.
+3.  A UI admin abre mostrando a(s) sala(s) em abas. A última aba é `+`.
+4.  Mila clica `+` para criar uma sala (ou a sala 1 já existe por padrão).
+5.  Mila compartilha a URL base com as crianças (elas instalam a PWA e abrem).
+6.  Conforme as crianças entram (mecanismo a definir), Mila vê a lista de clientes na aba de cada sala.
+7.  Mila pode clicar `X` em um cliente para banir ou `→` para movê-lo para a próxima sala.
+8.  Quando estiver pronta, Mila escolhe a palavra e o limite de tentativas na sala em que está e clica "Iniciar".
+9.  A sala passa para "em jogo"; a UI admin mostra o estado da partida (palavra mascarada, tentativas, turno).
+10. Ao final (palavra descoberta ou Mila encerrar), a UI mostra o resultado e o botão de reiniciar.
+
+#### Fluxo Cliente (criança)
+1.  A criança abre a PWA (URL base, sem parâmetro).
+2.  A PWA pede um nickname na primeira vez e recebe um token; salva em `localStorage`.
+3.  A PWA faz `POST /join` para entrar numa sala (mecanismo de atribuição a definir).
+4.  A criança vê a tela da sala: "Aguardando Mila iniciar o jogo".
+5.  Quando Mila inicia, a criança vê a palavra mascarada e espera sua vez.
+6.  Na sua vez, digita uma letra e envia.
+7.  O servidor valida, atualiza o estado e passa a vez.
+8.  Acompanhar até o fim da partida.
 
 ### Identificação e Reconexão
-- Cada cliente recebe um **token** ao definir o nickname; identifica o jogador no servidor e preserva o nickname entre partidas.
-- Token salvo em `localStorage` da PWA.
-- Acesso à sala é pelo link (e/ou código de sala — a definir).
-- Reconexão: como o estado está no servidor, basta o cliente voltar a fazer polling com o mesmo token.
+- **Cliente:** token por nickname, salvo em `localStorage`. Reconexão: basta reabrir a PWA com o mesmo token.
+- **Admin:** token validado no carregamento. Se rotacionado, a PWA mostra campo para digitar o novo (salva em `localStorage` para próximos loads).
 
 ### Regras de Jogo e Conexão
-- **Modo Privado:** a sala é privada; o link/código é o controle de acesso.
-- **Multiplayer:** quantos clientes estiverem na sala antes do início da partida.
+- **Salas:** múltiplas desde o início; Mila cria via `+`.
+- **Multiplayer por sala:** quantos clientes estiverem na sala antes do início.
 - **Ordem de Turno:** definida pela ordem de chegada na sala; o servidor coordena.
-- **Painel do Host (Mila):** exibe os clientes conectados, opção de kick, controle de início/encerramento.
-- **Limite de Clientes:** sem limite fixo (escala da carga de polling).
+- **Ações do admin (Mila):**
+  - `+` cria nova sala.
+  - `X` em um cliente bane.
+  - `→` em um cliente move para a próxima sala.
+  - "Iniciar" inicia a partida na sala atual.
+  - "Encerrar" encerra a partida atual.
+- **Limite de Clientes por sala:** sem limite fixo.
 - **Turnos:** cada cliente joga em sequência com timer de 10s para sugerir **uma única letra** (forca clássica).
 - **Desistência:** o jogador pode desistir e sai da partida.
 - **Limite de Tentativas:** configurável por partida junto com a palavra secreta.
 - **Palavra Secreta:** pode conter espaços ou hífens; são exibidos e não precisam ser adivinhados.
-- **Acesso:** nickname + token; sem autenticação adicional.
+- **Acesso:** nickname + token (cliente); admin token (Mila).
 - **Persistência:** ranking acumulado por nickname (no backend cPanel).
 - **Ranking:** conta todas as partidas e estatísticas, não apenas vitórias.
-- **Fim de Jogo:** sem tempo total; termina quando a palavra é descoberta ou o host encerra/reinicia.
+- **Fim de Jogo:** sem tempo total; termina quando a palavra é descoberta ou o admin encerra/reinicia.
 
 ### Enredo Principal
 - O jogo se passa em um reino mágico com um portal.
