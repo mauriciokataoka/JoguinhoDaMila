@@ -21,9 +21,9 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A ho
 - **Plataforma:** PWA (qualquer navegador móvel moderno).
 - **Instalação:** Add to Home Screen no iOS ou "Instalar app" no Android — feito uma vez por um adulto, **sem parâmetros por install** (URL base fixa).
 - **Detecção de papel:**
-  - Com `?mila=<token_válido>` → UI **admin** (Mila).
-  - Sem `?mila` ou token inválido → UI **cliente**.
-- **Onboarding (cliente):** primeiro modal pede nickname e exibe o token gerado (salvo em `localStorage`).
+  - Com `?mila=<token_válido>` → UI **admin** (Mila). O nome exibido da admin é "Mila" por padrão (customizável em `config.php`).
+  - Sem `?mila` ou token inválido → UI **cliente** (pode ter `?nome=<valor>` para pré-preencher o nickname).
+- **Onboarding (cliente):** primeiro modal pede nickname e exibe o token gerado (salvo em `localStorage`). Se a URL contém `?nome=<valor>`, o nickname é pré-preenchido (configurado pelo adulto na instalação) e o modal pode ser pulado ou só confirmado.
 - **Comunicação (cliente):** `GET /state?sala=…` a cada 1s; `POST /action` para sugerir letra, desistir.
 - **Comunicação (admin):** `GET /api/admin/state` a cada 1s (lista de salas e clientes); `POST /api/admin/action` para criar sala, escolher palavra, iniciar, mover, banir.
 - **Token do admin:** validado no carregamento; pode ser digitado manualmente na PWA e salvo em `localStorage` (para suportar rotação sem reinstalar).
@@ -55,7 +55,7 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A ho
 
 #### Fluxo Cliente (criança)
 1.  A criança abre a PWA (URL base, sem parâmetro).
-2.  A PWA pede um nickname na primeira vez e recebe um token; salva em `localStorage`.
+2.  A PWA pede um nickname na primeira vez e recebe um token; salva em `localStorage`. Se a URL contém `?nome=<valor>`, o nickname vem pré-preenchido (configurado pelo adulto na instalação) e o modal pode ser pulado ou só confirmado.
 3.  A PWA faz `POST /join` para entrar numa sala (mecanismo de atribuição a definir).
 4.  A criança vê a tela da sala: "Aguardando Mila iniciar o jogo".
 5.  Quando Mila inicia, a criança vê a palavra mascarada e espera sua vez.

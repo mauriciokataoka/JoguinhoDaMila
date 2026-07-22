@@ -11,6 +11,8 @@
 
 ### Added
 - ADR-005: cPanel shared + PWA + polling HTTP (accepted) — agora inclui multi-sala e admin token.
+- **Parâmetro de nome (`?nome=<valor>`)** para clientes: pré-preenche o nickname no onboarding, permitindo que o adulto configure o nome de cada kid na instalação da PWA.
+- **Mila é a admin:** a URL dela é `?mila=<token>` (sem `?nome=`). O nome "Mila" é o nome padrão da role (customizável em `config.php` via `$ADMIN_NAME` se necessário).
 
 ### Accepted
 - ADR-005 ratificada: polling HTTP a 1s entre cliente e servidor cPanel.

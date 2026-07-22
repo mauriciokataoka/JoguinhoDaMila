@@ -4,7 +4,7 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A PW
 
 ## Visão geral
 - Hospedagem: cPanel shared (PHP) em `joguinhodamila.kataoka.com.br` (HTTPS via Let's Encrypt).
-- Cliente: PWA instalável em iOS e Android (instalada uma vez por adulto, sem parâmetros por install).
+- Cliente: PWA instalável em iOS e Android (instalada uma vez por adulto; a URL do kid pode incluir `?nome=<valor>` para pré-preencher o nickname).
 - Transporte: polling HTTP a 1s (sem WebSocket, sem P2P).
 - Multi-sala desde o início: Mila cria salas via `+` na barra de abas.
 - Admin token rotacionável: vive em `config.php`; se vazar, basta editar.

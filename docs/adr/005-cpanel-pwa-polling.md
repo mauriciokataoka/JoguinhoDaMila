@@ -39,8 +39,14 @@ cPanel shared em `https://joguinhodamila.kataoka.com.br`:
 
 ### 3. Modelo de papel (única PWA)
 Mesma PWA para admin e clientes. O papel é detectado pela presença e validade do **parâmetro `?mila=<token>`**:
-- `?mila=<token_válido>` → UI **admin** (Mila): multi-sala com abas, ações de mover/banir/criar sala/iniciar jogo.
+- `?mila=<token_válido>` → UI **admin** (Mila): multi-sala com abas, ações de mover/banir/criar sala/iniciar jogo. O nome exibido da admin é **"Mila"** por padrão (implícito pela role; customizável em `config.php` via `$ADMIN_NAME` se necessário).
 - Sem `?mila` ou token inválido → UI **cliente**: entra numa sala, vê o estado, sugere letras.
+
+**Parâmetro de nome (clientes):**
+- A URL do cliente pode incluir `?nome=<valor>` (ex.: `?nome=Joao`).
+- A PWA lê o parâmetro e pré-preenche o nickname no modal de onboarding; pula o modal se o nome já está confirmado (em visitas subsequentes com o mesmo token em `localStorage`).
+- Compatível com a regra de install fixo: o adulto configura a URL uma vez na instalação, incluindo o nome do kid.
+- **Mila (admin) não usa `?nome=`** — ela é a admin, identificada pelo token. O nome "Mila" é o nome padrão da role.
 
 ### 4. Estado e autoridade
 - **Servidor cPanel** é a **fonte autoritativa** do estado de **todas as salas e partidas**.

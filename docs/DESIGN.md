@@ -11,6 +11,7 @@
 - O modal pede o nickname na primeira vez (clientes) ou valida o admin token (Mila).
 
 ### UI Cliente (criança)
+- **Onboarding:** se a URL contém `?nome=<valor>`, mostra o nickname pré-preenchido e pede confirmação; sem o parâmetro, mostra o campo de nickname vazio. Após confirmar, salva o token em `localStorage`.
 - Tela principal: estado da sala em que está.
   - Aguardando: "Aguardando Mila iniciar o jogo."
   - Em jogo: palavra mascarada (`_ _ _ _`), tentativas restantes, lista de jogadores com indicador de quem é a vez, timer.
@@ -19,6 +20,7 @@
 - Reconexão automática ao recarregar.
 
 ### UI Admin (Mila)
+- A admin é identificada pelo **token na URL** (`?mila=<token>`); o nome exibido na UI é **"Mila"** por padrão (customizável em `config.php`).
 - Barra de **abas** no topo, uma por sala. Cada aba mostra o ID da sala (ex.: "1", "2", "3").
 - A **última aba é sempre `+`** — clicar cria uma nova sala.
 - Conteúdo da aba selecionada:
