@@ -5,7 +5,7 @@
 ## [Unreleased]
 ### Changed
 - **Transporte (P2P → polling HTTP):** a iteração anterior propôs P2P via WebRTC DataChannel; reconsiderada a favor de **polling HTTP a 1s** entre cliente e servidor. Mais simples, funciona em qualquer rede, sem WebSocket, sem STUN/TURN, e Mila deixa de ser SPOF.
-- **Parâmetro do host:** `?mmila` (não `?mila`).
+- **Parâmetro do host:** `?mila` (typo `?mmila` corrigido).
 
 ### Added
 - ADR-005: cPanel shared + PWA + polling HTTP (proposed) — substitui a proposta de P2P.

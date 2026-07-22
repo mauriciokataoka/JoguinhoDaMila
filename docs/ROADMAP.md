@@ -17,7 +17,7 @@
 - [ ] Desenhar protocolo de API (rotas `/state`, `/action`, payloads, versionamento).
 - [ ] Implementar modal de inicialização offline (coração rosa claro, fundo rosa escuro, faixa diagonal com "Joguinho da Mila").
 - [ ] Stub do backend de jogo no cPanel (Hello World + endpoints básicos).
-- [ ] Stub da PWA (carrega, detecta `?mmila`, faz polling, mostra estado).
+- [ ] Stub da PWA (carrega, detecta `?mila`, faz polling, mostra estado).
 - [ ] Integrar a forca: Mila escolhe palavra, fluxo de turno via polling, validação, ranking.
 - [x] Documentar regras de partida — ADR-003.
 

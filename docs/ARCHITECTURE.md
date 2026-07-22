@@ -32,7 +32,7 @@
 
 ### URLs e domínios
 - Produção: `https://joguinhodamila.kataoka.com.br`
-- Mila (host): `https://joguinhodamila.kataoka.com.br/?mmila`
+- Mila (host): `https://joguinhodamila.kataoka.com.br/?mila`
 - Cliente: `https://joguinhodamila.kataoka.com.br/` (entra na sala ativa — a definir se singleton ou código)
 
 ### Estado e autoridade

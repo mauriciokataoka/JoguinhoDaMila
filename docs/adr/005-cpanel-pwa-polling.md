@@ -13,7 +13,7 @@ O app precisa ser instalável em todos os dispositivos das crianças (iOS e Andr
 Restrições e recursos atuais:
 - **cPanel shared hosting** é o que está disponível.
 - **HTTPS** é obrigatório para PWA instalável; cPanel entrega via Let's Encrypt.
-- Mila acessa `https://joguinhodamila.kataoka.com.br/?mmila` e vira **host** do jogo (escolhe a palavra, inicia/encerra, kick).
+- Mila acessa `https://joguinhodamila.kataoka.com.br/?mila` e vira **host** do jogo (escolhe a palavra, inicia/encerra, kick).
 - Os outros clientes acessam a URL sem o parâmetro e entram como **jogadores**.
 - Velocidade não é crítica; tolerância a latência (timer de turno é 10s).
 - cPanel shared impõe limites (processos longos, WebSocket pode não estar disponível).
@@ -44,8 +44,8 @@ cPanel shared em `https://joguinhodamila.kataoka.com.br`:
 - **Sem WebSocket, sem WebRTC, sem STUN/TURN.** Roda em qualquer rede.
 
 ### 3. Modelo de papel (única PWA)
-Mesma PWA para Mila e crianças. O papel é detectado pelo **parâmetro `?mmila`** na URL:
-- Aberta **com** `?mmila` → papel de **host** (escolhe a palavra, inicia, kick, encerra).
+Mesma PWA para Mila e crianças. O papel é detectado pelo **parâmetro `?mila`** na URL:
+- Aberta **com** `?mila` → papel de **host** (escolhe a palavra, inicia, kick, encerra).
 - Aberta **sem** o parâmetro → papel de **jogador** (fornece nickname na primeira vez; entra na sala ativa).
 
 ### 4. Estado e autoridade

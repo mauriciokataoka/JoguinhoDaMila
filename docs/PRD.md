@@ -5,7 +5,7 @@
 ## PRD (Product Requirements Document)
 
 ### Visão Geral
-Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A hospedagem pública é o **cPanel shared**, que serve a PWA via HTTPS e roda o servidor de jogo. A PWA é o único cliente; aberta com **`?mmila`**, ela se transforma no **host** (Mila escolhe a palavra, controla o jogo). Abertas sem o parâmetro, as outras crianças entram como jogadoras. Cada cliente conversa com o servidor via **polling HTTP a 1s** (sem WebSocket, sem P2P). Funciona em qualquer rede.
+Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A hospedagem pública é o **cPanel shared**, que serve a PWA via HTTPS e roda o servidor de jogo. A PWA é o único cliente; aberta com **`?mila`**, ela se transforma no **host** (Mila escolhe a palavra, controla o jogo). Abertas sem o parâmetro, as outras crianças entram como jogadoras. Cada cliente conversa com o servidor via **polling HTTP a 1s** (sem WebSocket, sem P2P). Funciona em qualquer rede.
 
 ### Requisitos do Servidor (público)
 - **Plataforma:** cPanel shared hosting.
@@ -19,7 +19,7 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A ho
 ### Requisitos do Cliente
 - **Plataforma:** PWA (qualquer navegador móvel moderno).
 - **Instalação:** Add to Home Screen no iOS ou "Instalar app" no Android — exige HTTPS (garantido pelo cPanel).
-- **Entrada:** acessa `https://joguinhodamila.kataoka.com.br`; se a URL contém `?mmila`, a PWA assume o papel de **host** (Mila); senão, papel de **jogadora**.
+- **Entrada:** acessa `https://joguinhodamila.kataoka.com.br`; se a URL contém `?mila`, a PWA assume o papel de **host** (Mila); senão, papel de **jogadora**.
 - **Onboarding:** primeiro modal pede nickname e exibe o token gerado (salvo em `localStorage`).
 - **Comunicação:** `GET /state` a cada 1s; `POST /action` para sugerir letra, desistir, iniciar/encerrar (host), kick (host).
 
@@ -30,8 +30,8 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A ho
 - **Host do jogo:** a PWA da Mila é o **cliente host**; o **servidor cPanel** é a fonte autoritativa do estado.
 
 ### Fluxo de Usuário e Conexão
-1.  Mila abre `https://joguinhodamila.kataoka.com.br/?mmila` no celular dela; a PWA carrega, identifica o papel de host e pede a palavra secreta e o limite de tentativas.
-2.  Mila compartilha o link (sem `?mmila`, ou com código de sala — a definir) com as outras crianças.
+1.  Mila abre `https://joguinhodamila.kataoka.com.br/?mila` no celular dela; a PWA carrega, identifica o papel de host e pede a palavra secreta e o limite de tentativas.
+2.  Mila compartilha o link (sem `?mila`, ou com código de sala — a definir) com as outras crianças.
 3.  Cada criança abre o link, a PWA carrega, pede um nickname na primeira vez e recebe um token; o token fica salvo em `localStorage`.
 4.  Cada cliente entra na sala do servidor; o servidor atribui um turno com base na ordem de chegada.
 5.  A PWA faz polling de estado a cada 1s. As crianças veem a sala de espera até Mila iniciar a partida.
