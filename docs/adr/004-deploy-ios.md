@@ -3,7 +3,7 @@
 *Status · Contexto · Decisão · Consequências*
 
 ## Status
-Proposed
+Superseded by [ADR-005](005-cpanel-pwa-p2p.md)
 
 ## Contexto
 O servidor do jogo é obrigatoriamente um app iOS no celular da Mila.

@@ -3,7 +3,7 @@
 *Status · Contexto · Decisão · Consequências*
 
 ## Status
-Accepted
+Superseded by [ADR-005](005-cpanel-pwa-p2p.md)
 
 ## Contexto
 O servidor do jogo roda no celular da Mila e os clientes usam um PWA conectado via QR code. Em redes móveis ou Wi-Fi comuns, o IP local do servidor pode mudar durante a sessão.

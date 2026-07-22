@@ -3,7 +3,7 @@
 *Status · Contexto · Decisão · Consequências*
 
 ## Status
-Accepted
+Superseded by [ADR-005](005-cpanel-pwa-p2p.md)
 
 ## Context
 Precisamos definir a tecnologia para o desenvolvimento do "Joguinho da Mil!a". Requisitos principais incluem:

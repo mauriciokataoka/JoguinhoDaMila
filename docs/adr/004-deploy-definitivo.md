@@ -3,7 +3,7 @@
 *Status · Contexto · Decisão · Consequências*
 
 ## Status
-Proposed
+Superseded by [ADR-005](005-cpanel-pwa-p2p.md)
 
 ## Contexto
 O app servidor deve ser definitivo. A solução de instalar via Apple ID gratuito e rebuildar a cada 7 dias não é aceitável.

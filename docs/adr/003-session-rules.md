@@ -14,7 +14,7 @@ As regras de jogo precisam ser explícitas para garantir comportamento consisten
 - O ranking contará todas as partidas e fará pontuação acumulada por nickname.
 - O painel do servidor exibirá todos os clientes conectados e terá opção de kick disponível a qualquer momento.
 - O token do jogador será armazenado no `localStorage` da PWA para manter a identificação entre partidas.
-- O timer de cada jogador será de 10 segundos para sugerir uma letra ou palavra.
+- O timer de cada jogador será de 10 segundos para sugerir **uma única letra** (forca clássica).
 - Se o jogador não responder em 10 segundos, a vez passa para o próximo jogador.
 - O servidor não terá limite fixo de clientes por partida, mas poderá encerrar conexões quando necessário.
 - A palavra secreta pode conter espaços ou hífens; espaços e hífens são exibidos e não precisam ser adivinhados.

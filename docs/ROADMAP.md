@@ -8,24 +8,26 @@
 - [x] Se for software: definir a stack.
 - [x] Definir funcionalidades e regras de jogo (PRD).
 - [x] Especificar fluxo servidor/cliente e tela de sala de espera.
-- [ ] **BLOQUEADOR**: Decidir entre alternativa iOS (ex.: AltStore) ou migrar servidor para Android.
-- [x] Atualizar PRD com arquitetura final iOS server + PWA e fluxo de partida.
-- [x] Criar ADR de fallback de IP e reconexão manual no PWA.
-- [x] Criar ADR de regras de sessão, ranking e identificação PWA.
-- [ ] Implementar modal de inicialização offline com coração rosa claro, fundo rosa escuro e faixa diagonal.
-- [ ] Criar protótipo inicial do app servidor e da PWA cliente.
-- [x] Documentar regras de partida: limite de tentativas configurável, token por nickname, 10s por vez, desistência, palavras com espaços/hífens.
+- [x] ~~BLOQUEADOR iOS vs Android~~ — resolvido pelo pivô para cPanel + PWA + P2P (ADR-005, proposed).
+- [x] ~~Criar ADR de fallback de IP~~ — ADR-002 superseded; HTTPS do cPanel elimina o fallback manual.
+- [x] ~~Criar ADR de regras de sessão~~ — ADR-003 mantida (Accepted); atualizada para "uma letra por turno".
+- [ ] **BLOQUEADOR**: Definir o modelo de rede do jogo (mesmo Wi-Fi sempre? cross-network com STUN/TURN?).
+- [ ] Definir o modelo de acesso à sala: singleton (uma sala global) vs código de sala por Mila.
+- [ ] Confirmar runtime do backend no cPanel (Node, PHP ou Python) — só precisa servir signaling HTTP + arquivos estáticos.
+- [ ] Desenhar protocolo de signaling (rooms, ICE exchange, mensagens).
+- [ ] Implementar modal de inicialização offline (coração rosa claro, fundo rosa escuro, faixa diagonal com "Joguinho da Mila").
+- [ ] Stub do backend de signaling no cPanel (Hello World + endpoint de registro de peer).
+- [ ] Stub da PWA (carrega, detecta `?mila`, conecta ao signaling, abre DataChannel).
+- [ ] Integrar a forca: Mila escolhe palavra, fluxo de turno via DataChannel, validação, ranking.
+- [x] Documentar regras de partida — ADR-003.
 
 ## Bloqueador crítico
-- **Deploy iOS sem Apple Developer**: App servidor precisa ser definitivo (não pode expirar a cada 7 dias).
-  - Opção A: Encontrar alternativa de deploy iOS (AltStore, código aberto, etc.).
-  - Opção B: Migrar servidor de iOS para Android.
-  - **Decisão aguardando para amanhã.**
-  - Ver [ADR-004](docs/adr/004-deploy-ios.md) para detalhes.
+- **Plataforma do servidor:** resolvido por ADR-005 (proposed) — cPanel shared + PWA + P2P, sem WebSocket.
+- **Item aberto do ADR-005 que trava a implementação:** modelo de rede (mesmo Wi-Fi ou cross-network) — define se STUN-only basta ou se TURN será necessário.
 
 ## Planejamento imediato
-- Retomar após decisão do bloqueador sobre iOS vs Android.
-- Se iOS com alternativa: protótipo inicial do app servidor e da PWA cliente.
-- Se Android: reavaliação da stack e reorganização do roadmap.
-
-
+- Assim que o modelo de rede for definido, iniciar:
+  1. Protocolo de signaling (rooms, ICE exchange).
+  2. Stub do backend (endpoint de registro).
+  3. Stub da PWA (carrega + `?mila` + DataChannel).
+- Modal de inicialização pode começar em paralelo (independe de rede).

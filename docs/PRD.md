@@ -5,67 +5,65 @@
 ## PRD (Product Requirements Document)
 
 ### Visão Geral
-Um jogo infantil multiplayer em rede para crianças.
+Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A hospedagem pública é o **cPanel shared**, que serve a PWA via HTTPS. A PWA é o único cliente; aberta com `?mila`, ela se transforma no **host autoritativo** (Mila escolhe a palavra, controla o jogo). Abertas sem o parâmetro, as outras crianças entram como jogadoras. Os clientes formam uma **rede P2P** entre si, e o estado do jogo (turno, validação, placar) flui inteiramente via P2P — o cPanel só faz signaling (descoberta de peers, troca de ICE). Sem WebSocket.
 
-### Requisitos do Servidor
-- **Plataforma:** iOS no celular da Mila.
-- **Formato:** App nativo iOS com servidor Go embutido.
-- **Função:** Serve a PWA aos clientes, expõe API de jogo e gera QR code para conexão.
-- **Deploy:** Atualização e distribuição apenas do app da Mila.
-- **Nota:** Não dispomos de conta Apple Developer no momento; o app servidor precisa ser definitivo e, portanto, é preciso avaliar alternativas de deploy iOS oficiais ou migrar para Android.
+### Requisitos do Servidor (público)
+- **Plataforma:** cPanel shared hosting.
+- **Domínio:** `joguinhodamila.kataoka.com.br` (HTTPS via Let's Encrypt, requisito para PWA instalável).
+- **Função 1:** serve a PWA estática para todos os clientes.
+- **Função 2:** expõe uma API HTTP simples de signaling (registro de peers na sala, troca de ICE candidates).
+- **Função 3:** persiste ranking e histórico de partidas por nickname.
+- **Stack do backend:** a confirmar conforme o que o cPanel aceita (Node, PHP ou Python).
+- **Deploy:** upload via FTP/SSH no cPanel; sem rebuild semanal.
 
 ### Requisitos do Cliente
-- **Plataforma:** PWA acessada por navegador móvel.
-- **Entrada:** Conecta via QR code para o IP/porta do celular da Mila.
-- **Onboarding:** Cada cliente fornece um nickname no primeiro modal.
+- **Plataforma:** PWA (qualquer navegador móvel moderno).
+- **Instalação:** Add to Home Screen no iOS ou "Instalar app" no Android — exige HTTPS (garantido pelo cPanel).
+- **Entrada:** acessa `https://joguinhodamila.kataoka.com.br`; se a URL contém `?mila=…`, a PWA assume o papel de **host** (Mila); senão, papel de **jogadora**.
+- **Onboarding:** primeiro modal pede nickname e exibe o token gerado (salvo em `localStorage`).
+- **Identidade na rede P2P:** cada cliente registra seu IP no signaling; peers trocam IPs via WebRTC.
 
 ### Stack Proposta
-- **Servidor:** Go executável standalone embutido no app iOS, condicionado à disponibilidade de conta Apple Developer.
-- **Cliente:** PWA para navegadores móveis.
-- **Rede:** Wi-Fi comum ou hotspot local; não requer internet.
-- **Admin:** App da Mila serve a API e a interface inicial do jogo.
+- **Host público:** cPanel shared (Node/PHP/Python) com HTTPS.
+- **Cliente:** PWA (HTML/CSS/JS, instalável).
+- **Transporte entre clientes:** WebRTC DataChannel (P2P).
+- **Signaling:** API HTTP simples no cPanel (sem WebSocket, sem long-polling para o jogo).
+- **STUN:** servidor público (ex.: `stun:stun.l.google.com:19302`); TURN postergado.
+- **Host do jogo:** a PWA da Mila é autoritativa para o estado da partida.
 
 ### Fluxo de Usuário e Conexão
-1.  O app servidor roda no celular da Mila e exibe o modal de inicialização.
-2.  Mila configura a palavra secreta do baú e o limite de tentativas por partida.
-3.  O servidor gera um QR code com o endereço local `http://<ip>:<porta>`.
-4.  Cada cliente escaneia o QR code e abre a PWA.
-5.  No primeiro modal, o cliente define um nickname e recebe um token de jogador.
-6.  O token é salvo no PWA para re-identificação em partidas sucessivas.
-7.  Clientes entram na sala de espera até a Mila iniciar a partida.
-8.  Se o servidor não for encontrado, o PWA exibe um input para o IP do servidor com o valor antigo pré-preenchido.
-9.  O app servidor exibe o IP atual sempre visível ao lado do título.
-10. Ao iniciar, novas conexões são bloqueadas e a partida começa.
-9.  Cada jogador tem até 10 segundos para sugerir uma letra ou uma palavra.
-10. Se o timer zerar, a vez passa para o próximo jogador.
-11. Se o jogador desistir, sai da partida.
-12. Se não responder, perde a vez até a próxima rodada.
-13. O servidor segue até a palavra ser descoberta ou o administrador encerrar/reiniciar a partida.
-14. Ao final, todos veem o modal de resultado; o servidor exibe botão para reiniciar.
+1.  Mila abre `https://joguinhodamila.kataoka.com.br/?mila=1` no celular dela; a PWA carrega, identifica o papel de host e pede a palavra secreta e o limite de tentativas.
+2.  Mila compartilha o link (com ou sem `?mila`, ou com código de sala — a definir) com as outras crianças.
+3.  Cada criança abre o link, a PWA carrega, pede um nickname na primeira vez e recebe um token; o token fica salvo em `localStorage`.
+4.  Cada cliente se registra no backend de signaling (sala, papel, ICE candidates).
+5.  Quando todas estão na sala, Mila inicia a partida; novas conexões podem ser bloqueadas nesse momento.
+6.  A PWA da Mila retransmite o estado do jogo para os clientes via DataChannel P2P. A rede P2P organiza a ordem dos turnos.
+7.  Cada jogador tem até 10 segundos para sugerir **uma única letra**; timeout passa a vez.
+8.  Se um jogador desistir, sai da partida; se não responder, perde a vez.
+9.  O jogo termina quando a palavra é descoberta ou quando a Mila encerra/reinicia.
+10.  Ao final, todos veem o modal de resultado; a PWA da Mila exibe botão para reiniciar.
 
 ### Identificação e Reconexão
-- Cada cliente recebe um token após definir o nickname.
-- O token identifica o jogador no servidor e preserva o nickname entre partidas.
-- O token é salvo no `localStorage` da PWA.
-- O QR code entrega apenas o endereço local do servidor, não o token.
-- Se o servidor não for encontrado, a PWA exibe um input para o IP do servidor, pré-preenchido com o IP antigo.
-- O PWA não precisa ser reinstalado se o IP mudar; basta atualizar o endereço no input.
-- O app servidor exibe o IP atual sempre visível ao lado do título.
+- Cada cliente recebe um **token** ao definir o nickname; identifica o jogador no backend signaling e preserva o nickname entre partidas.
+- Token salvo em `localStorage` da PWA.
+- Acesso à sala é pelo link (e/ou código de sala — a definir).
+- Identidade técnica na rede P2P é o IP do cliente (visível aos pares via signaling).
+- Reconexão: se a P2P cair, o cliente re-registra no signaling e reabre o DataChannel.
 
 ### Regras de Jogo e Conexão
-- **Modo Privado:** O servidor funciona como uma sala privada local.
-- **Multiplayer:** Quantos clientes estiverem conectados pelo QR code antes do início da partida.
-- **Ordem de Turno:** Definida pela ordem de chegada dos jogadores.
-- **Painel do Servidor:** Deve exibir os clientes conectados com opção de kick.
-- **Limite de Clientes:** Não há limite máximo fixo de clientes por partida.
-- **Turnos:** Cada cliente joga em sequência com timer de 10 segundos para sugerir letra ou palavra.
-- **Desistência:** O jogador pode desistir e sai da partida.
-- **Limite de Tentativas:** Configurável por partida junto com a palavra secreta.
-- **Palavra Secreta:** Pode conter espaços ou hífens; espaços e hífens são exibidos e não precisam ser adivinhados.
-- **Acesso:** Não há autenticação além do nickname/token.
-- **Persistência:** Partidas são salvas e o ranking é acumulado por nickname.
-- **Ranking:** Conta todas as partidas e estatísticas, não apenas vitórias.
-- **Fim de Jogo:** Não há tempo total de partida; ela termina apenas quando a palavra é descoberta ou o servidor encerra/reinicia.
+- **Modo Privado:** a sala é privada; o link/código é o controle de acesso.
+- **Multiplayer:** quantos clientes estiverem na sala antes do início da partida.
+- **Ordem de Turno:** definida pela ordem de chegada na sala; organizada pela rede P2P (a PWA da Mila coordena).
+- **Painel do Host (Mila):** exibe os clientes conectados, opção de kick, controle de início/encerramento.
+- **Limite de Clientes:** sem limite fixo (escala da mesh P2P).
+- **Turnos:** cada cliente joga em sequência com timer de 10s para sugerir **uma única letra** (forca clássica).
+- **Desistência:** o jogador pode desistir e sai da partida.
+- **Limite de Tentativas:** configurável por partida junto com a palavra secreta.
+- **Palavra Secreta:** pode conter espaços ou hífens; são exibidos e não precisam ser adivinhados.
+- **Acesso:** nickname + token; sem autenticação adicional.
+- **Persistência:** ranking acumulado por nickname (no backend cPanel).
+- **Ranking:** conta todas as partidas e estatísticas, não apenas vitórias.
+- **Fim de Jogo:** sem tempo total; termina quando a palavra é descoberta ou o host encerra/reinicia.
 
 ### Enredo Principal
 - O jogo se passa em um reino mágico com um portal.
@@ -74,7 +72,3 @@ Um jogo infantil multiplayer em rede para crianças.
 - O vilão perdeu a chave do portal.
 - Quem encontrar a chave liberta a família real e vence o jogo.
 - O jogo se repete continuamente, permitindo partidas sucessivas.
-
-...
-
-...

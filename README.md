@@ -1,12 +1,12 @@
 # Joguinho da Mil!a
 
-Jogo infantil multiplayer local. O servidor roda no celular da Mila e serve uma PWA para as outras jogadoras.
+Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A PWA roda em qualquer celular; a hospedagem pública (cPanel) serve a PWA via HTTPS e faz signaling. A Mila é a host: ela abre a PWA com `?mila`, escolhe a palavra, e as crianças entram pela mesma URL formando uma rede P2P para jogar.
 
 ## Visão geral
-- Servidor iOS com Go embutido.
-- Clientes acessam por PWA via QR code.
-- O jogo é um tipo de forca cooperativa com palavra secreta configurada pela Mila.
-- O IP do servidor é exibido no app e a PWA permite atualizar o endereço se o servidor mudar de IP.
+- Hospedagem: cPanel shared em `joguinhodamila.kataoka.com.br` (HTTPS via Let's Encrypt).
+- Cliente: PWA instalável em iOS e Android.
+- Rede: P2P via WebRTC DataChannel; signaling por API HTTP simples no cPanel.
+- Sem dependência de Apple Developer. Sem WebSocket.
 
 ## Documentação do projeto
 - [PRD](docs/PRD.md)
@@ -17,27 +17,13 @@ Jogo infantil multiplayer local. O servidor roda no celular da Mila e serve uma 
 - [ADRs](docs/adr/INDEX.md)
 
 ## Estado atual
-- Documentação de requisitos e fluxo atualizada em `docs/PRD.md`.
-- Roadmap atualizado em `docs/ROADMAP.md`.
-- ADRs criadas em `docs/adr/` para decisões de stack, fallback de IP e regras de sessão.
+- Decisão de plataforma: cPanel + PWA + P2P (ADR-005, proposed).
+- Pendente: modelo de rede e modelo de acesso à sala (ver [[ROADMAP]]).
+- Modal de inicialização desenhado, aguardando implementação.
 
-## Deploy e GitHub
-O repositório já foi criado em `github.com/mauriciokataoka/JoguinhoDaMila` e os commits atuais foram pushados para `main`.
-
-## Deploy depois de pronto
-1.  Finalizar o desenvolvimento no repositório e garantir que o app iOS servidor esteja funcionando.
-2.  Build do app iOS com Xcode, incorporando o binário Go e os arquivos estáticos da PWA.
-3.  Não dispomos de conta Apple Developer no momento; isso torna a distribuição oficial de um app iOS definitivo inviável atualmente.
-4.  Como o app servidor precisa ser definitivo, não abrimos mão de uma solução de deploy que não exija rebuild a cada 7 dias.
-5.  Precisamos avaliar duas alternativas:
-    - obter uma conta Apple Developer e fazer deploy iOS oficial;
-    - ou migrar o servidor para um app Android que possa ser instalado de forma definitiva.
-6.  Executar o app no celular da Mila; ele servirá a PWA localmente e gerará o QR code para as clientes.
-7.  O PWA não precisa ser publicado em servidor público, pois será servido pelo app localmente.
-
-### Observações
-- O deploy principal é a instalação do app servidor no celular da Mila.
-- A solução de build com Apple ID gratuito não é aceitável para o app servidor definitivo.
-- Precisamos decidir se vamos viabilizar o deploy iOS oficial ou mover o servidor para Android.
-- O código fonte e as releases podem ser mantidos no GitHub.
-- Vamos documentar essa decisão e retornar amanhã.
+## Deploy
+1. O código fica no GitHub (repositório público).
+2. Build da PWA é estático (HTML/CSS/JS); sobe via FTP/SSH no cPanel.
+3. Backend de signaling roda no cPanel (linguagem a confirmar com a hospedagem).
+4. Let's Encrypt ativa o HTTPS no domínio.
+5. Mila acessa `https://joguinhodamila.kataoka.com.br/?mila=1` para ser host; crianças acessam a URL base.
