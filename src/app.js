@@ -12,6 +12,7 @@ let roomId = parseInt(localStorage.getItem('joguinho_room_id') || '0', 10) || nu
 let lastAdminState = null;
 let lastClientState = null;
 let selectedRoomId = null;
+let savedFormState = null;
 let pollTimer = null;
 
 function $(sel) { return document.querySelector(sel); }
@@ -264,6 +265,32 @@ async function pollAdmin() {
 function renderAdminContent() {
   const root = $('#admin-root');
   if (!root) return;
+
+  // Preserva o estado do form de "aguardando" entre re-renders (o poll a 1s
+  // destrói e recria os inputs, apagando o que a Mila digita). Limpa ao
+  // sair de "aguardando" para não restaurar a palavra após um reset.
+  if (selectedRoomId !== null && lastAdminState) {
+    const cur = lastAdminState.rooms.find(r => r.id === selectedRoomId);
+    const inAguardando = cur && cur.status === 'aguardando';
+    if (!inAguardando) {
+      savedFormState = null;
+    } else {
+      const oldWord = root.querySelector(`#word-input-${selectedRoomId}`);
+      const oldAttempts = root.querySelector(`#attempts-input-${selectedRoomId}`);
+      if (oldWord && oldAttempts) {
+        const active = document.activeElement;
+        savedFormState = {
+          roomId: selectedRoomId,
+          word: oldWord.value,
+          attempts: oldAttempts.value,
+          activeId: active && (active.id === oldWord.id || active.id === oldAttempts.id) ? active.id : null,
+          selStart: active && 'selectionStart' in active ? active.selectionStart : null,
+          selEnd: active && 'selectionEnd' in active ? active.selectionEnd : null,
+        };
+      }
+    }
+  }
+
   root.innerHTML = '';
 
   const tabs = el('div', { class: 'tabs' });
@@ -289,6 +316,25 @@ function renderAdminContent() {
     main.appendChild(el('div', { class: 'card' }, 'Nenhuma sala. Clique em + para criar.'));
   }
   root.appendChild(main);
+
+  // Restaura o form se for a mesma sala em "aguardando".
+  if (savedFormState && savedFormState.roomId === selectedRoomId) {
+    const newWord = root.querySelector(`#word-input-${selectedRoomId}`);
+    const newAttempts = root.querySelector(`#attempts-input-${selectedRoomId}`);
+    if (newWord && newAttempts) {
+      newWord.value = savedFormState.word;
+      newAttempts.value = savedFormState.attempts;
+      if (savedFormState.activeId) {
+        const toFocus = document.getElementById(savedFormState.activeId);
+        if (toFocus) {
+          toFocus.focus();
+          if (savedFormState.selStart !== null) {
+            try { toFocus.setSelectionRange(savedFormState.selStart, savedFormState.selEnd); } catch (e) {}
+          }
+        }
+      }
+    }
+  }
 }
 
 function renderAdminRoom(room) {
@@ -298,8 +344,8 @@ function renderAdminRoom(room) {
   header.appendChild(el('span', { class: 'room-status ' + room.status }, room.status.replace('_', ' ')));
 
   if (room.status === 'aguardando') {
-    const wordInput = el('input', { class: 'modal-input', type: 'text', placeholder: 'Palavra secreta (espaços e hífens ok)', value: room.word || '' });
-    const attemptsInput = el('input', { class: 'modal-input', type: 'number', placeholder: 'Máx. tentativas', value: room.max_attempts || 6, min: '1', max: '26' });
+    const wordInput = el('input', { id: `word-input-${room.id}`, class: 'modal-input', type: 'text', placeholder: 'Palavra secreta (espaços e hífens ok)', value: room.word || '' });
+    const attemptsInput = el('input', { id: `attempts-input-${room.id}`, class: 'modal-input', type: 'number', placeholder: 'Máx. tentativas', value: room.max_attempts || 6, min: '1', max: '26' });
     const error = el('div', { class: 'error' });
     const startBtn = el('button', {
       class: 'btn',
