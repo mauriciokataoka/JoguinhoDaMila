@@ -17,25 +17,30 @@ Jogo infantil multiplayer (forca com tema de reino mágico) para crianças. A PW
 ## Estrutura
 ```
 src/
-├── api/                    # backend PHP
-│   ├── config.php          # $ADMIN_TOKEN, $ADMIN_NAME
-│   ├── db.php              # PDO + schema SQLite + helpers
-│   ├── api.php             # entry point / router
-│   ├── data/               # SQLite (gitignored; criado em runtime)
-│   └── endpoints/
-│       ├── check_admin.php
-│       ├── join.php
-│       ├── state.php
-│       ├── action.php
-│       ├── admin_state.php
-│       └── admin_action.php
-└── pwa/                    # frontend PWA
-    ├── index.html
-    ├── app.js              # polling + UI (admin e cliente)
-    ├── style.css
-    ├── manifest.json
-    ├── sw.js               # service worker (cache-first p/ shell)
-    └── icon.svg
+├── index.html              # PWA (servido na raiz do subdomínio)
+├── app.js                  # polling + UI (admin e cliente)
+├── style.css
+├── manifest.json
+├── sw.js                   # service worker (cache-first p/ shell)
+├── icon.svg
+└── api/                    # backend PHP
+    ├── config.php          # $ADMIN_TOKEN, $ADMIN_NAME
+    ├── db.php              # PDO + schema SQLite + helpers
+    ├── api.php             # entry point / router
+    ├── data/               # SQLite (gitignored; criado em runtime; protegido por .htaccess)
+    └── endpoints/
+        ├── check_admin.php
+        ├── join.php
+        ├── state.php
+        ├── action.php
+        ├── admin_state.php
+        └── admin_action.php
+
+deploy/                     # scripts de deploy (modelo MegaWordChallenge)
+├── deploy.sh               # primário: rsync sobre SSH
+├── deploy-ftp.sh           # fallback: lftp (FTP+TLS)
+├── .deploy.env             # gitignored; credenciais reais
+└── .deploy.env.example     # template
 ```
 
 ## Documentação do projeto
@@ -47,14 +52,27 @@ src/
 - [ADRs](docs/adr/INDEX.md)
 
 ## Deploy
-1. Edite `src/api/config.php` e troque `$ADMIN_TOKEN` por um valor seguro.
-2. Suba `src/` para o cPanel via FTP/SSH (em `public_html/` ou similar).
-3. Garanta que `src/api/data/` seja gravável pelo PHP (chmod 0755 ou 0775).
-4. Ative o HTTPS no domínio (Let's Encrypt no cPanel).
-5. Mila acessa `https://joguinhodamila.kataoka.com.br/src/pwa/?mila=<seu_token>` para ser admin.
-6. Crianças acessam `https://joguinhodamila.kataoka.com.br/src/pwa/` (com `?nome=<valor>` opcional).
 
-**Importante:** ajuste os caminhos acima conforme a estrutura do cPanel (a raiz pública pode ser `public_html/`, e a PWA pode ficar em `public_html/pwa/` em vez de `src/pwa/`). O `api.php` deve ficar acessível na URL que o `app.js` aponta (`./api/api.php` em relação à PWA).
+O deploy é automatizado pelos scripts em `deploy/` (mesmo padrão do MegaWordChallenge).
+
+### Scripts
+- **`deploy/deploy.sh`** — **primário**: `rsync` sobre SSH (Hostinger: porta 65002, chave `~/.ssh/mwc_deploy`).
+- **`deploy/deploy-ftp.sh`** — **fallback**: `lftp` com FTP explícito sobre TLS.
+
+Ambos aceitam: `--dry-run`, `--yes`, `--no-delete`.
+
+### Primeira vez
+1. `deploy/.deploy.env` já está criado e preenchido (gerado a partir do FileZilla sitemanager; gitignored, chmod 600).
+2. Edite `src/api/config.php` e troque `$ADMIN_TOKEN` por um valor seguro.
+3. No cPanel/Hostinger, crie o subdomínio `joguinhodamila.kataoka.com.br` com docroot em `/home/kataokac/joguinhodamila/` (= `REMOTE_PATH` relativo ao home).
+4. Ative o HTTPS no domínio (Let's Encrypt no cPanel).
+5. Rode `./deploy/deploy.sh --dry-run` para conferir, depois `./deploy/deploy.sh`.
+
+### Rotina
+- `./deploy/deploy.sh` — espelha `src/` inteiro em `~/joguinhodamila/` (PWA na raiz, `api/` como subdir).
+- O SQLite (`api/data/jogo.sqlite`) é **preservado** entre deploys (`api/data/*.sqlite*` no exclude do rsync).
+- `chmod 755` em `api/data/` é aplicado via SSH após o upload.
+- Para rotacionar o admin token: edite `src/api/config.php`, faça deploy, e reenvie a nova URL com `?mila=<novo_token>` para Mila reinstalar a PWA.
 
 ## Teste local
 - Backend: `php -S localhost:8000 -t src/api/` (servidor de desenvolvimento do PHP).

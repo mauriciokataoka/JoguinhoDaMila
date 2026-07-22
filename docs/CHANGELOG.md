@@ -31,3 +31,11 @@
 ### Notes
 - v0.1.0 é a primeira versão funcional end-to-end. Pronto para deploy no cPanel e teste em dispositivos reais.
 - `$ADMIN_TOKEN` em `config.php` precisa ser trocado para um valor seguro antes do deploy de produção.
+
+### Deploy
+- Scripts de deploy no padrão MegaWordChallenge: `deploy/deploy.sh` (rsync+SSH, primário) e `deploy/deploy-ftp.sh` (lftp+TLS, fallback).
+- `deploy/.deploy.env` (gitignored, chmod 600) com credenciais reais (SSH `kataokac@kataoka.com.br:65002` via `~/.ssh/mwc_deploy`; FTP fallback).
+- `src/api/data/.htaccess` protege o SQLite contra download direto.
+
+### Changed
+- Reestruturação de `src/`: PWA achatada para a raiz (`src/index.html`, `src/app.js`, ...) e `src/api/` como subdir. Necessário para que `joguinhodamila.kataoka.com.br/` sirva a PWA diretamente e o subdomínio `api/` (ou seja, `/api/api.php`) sirva o backend.
