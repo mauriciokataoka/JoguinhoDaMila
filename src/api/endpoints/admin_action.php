@@ -76,6 +76,11 @@ if ($action_type === 'create_room') {
         ->execute([$client_token, $nickname]);
     $pdo->prepare("DELETE FROM players WHERE token = ?")->execute([$client_token]);
     json_response(['success' => true]);
+} elseif ($action_type === 'unban') {
+    $client_token = trim($payload['client_token'] ?? '');
+    if ($client_token === '') json_response(['error' => 'invalid_params'], 400);
+    $pdo->prepare("DELETE FROM bans WHERE token = ?")->execute([$client_token]);
+    json_response(['success' => true]);
 } else {
     json_response(['error' => 'unknown_action'], 400);
 }

@@ -34,8 +34,14 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 }
 
 $last_room = end($rooms);
+$banned = [];
+$stmt = $pdo->query("SELECT token, nickname, banned_at FROM bans ORDER BY banned_at DESC LIMIT 50");
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $banned[] = ['token' => $row['token'], 'nickname' => $row['nickname'], 'banned_at' => $row['banned_at']];
+}
 json_response([
     'admin_name' => $GLOBALS['ADMIN_NAME'],
     'rooms' => $rooms,
     'last_room_id' => $last_room ? (int)$last_room['id'] : null,
+    'banned' => $banned,
 ]);

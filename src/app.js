@@ -327,6 +327,9 @@ function renderAdminContent() {
   } else {
     main.appendChild(el('div', { class: 'card' }, 'Nenhuma sala. Clique em + para criar.'));
   }
+  if (lastAdminState.banned && lastAdminState.banned.length > 0) {
+    main.appendChild(renderBannedList(lastAdminState.banned));
+  }
   root.appendChild(main);
 
   // Restaura o form se for a mesma sala em "aguardando".
@@ -347,6 +350,24 @@ function renderAdminContent() {
       }
     }
   }
+}
+
+function renderBannedList(banned) {
+  const card = el('div', { class: 'card' });
+  card.appendChild(el('h3', { class: 'card-title' }, 'Banidos (' + banned.length + ')'));
+  for (const b of banned) {
+    const row = el('div', { class: 'player-row' });
+    row.appendChild(el('span', { class: 'player-nickname' }, b.nickname));
+    const actions = el('div', { class: 'action-buttons' });
+    actions.appendChild(el('button', {
+      class: 'icon-btn',
+      title: 'Desbanir',
+      onclick: () => unbanClient(b.token),
+    }, '↻'));
+    row.appendChild(actions);
+    card.appendChild(row);
+  }
+  return card;
 }
 
 function renderAdminRoom(room) {
@@ -484,6 +505,15 @@ async function banClient(clientToken, nickname) {
   }
 }
 
+async function unbanClient(clientToken) {
+  if (!confirm('Desbanir este cliente?')) return;
+  try {
+    await api('admin/action', 'POST', { token: adminToken, type: 'unban', payload: { client_token: clientToken } });
+  } catch (e) {
+    alert('Erro: ' + (e.error || 'desconhecido'));
+  }
+}
+
 // CLIENT UI
 function renderClient() {
   const app = $('#app');
@@ -505,7 +535,9 @@ async function pollClient() {
       localStorage.removeItem('joguinho_room_id');
       clientToken = null;
       roomId = null;
-      renderError('Você foi banida deste jogo.');
+      // Volta pro modal de entrada: novo nickname gera token novo, que não está banido.
+      mode = 'client';
+      renderInitialModal();
     } else if (e.status === 403 && e.error === 'not_in_room') {
       try {
         await joinRoom();
