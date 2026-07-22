@@ -39,8 +39,9 @@ cPanel shared em `https://joguinhodamila.kataoka.com.br`:
 
 ### 2. Transporte: polling HTTP (sem WebSocket, sem P2P)
 - A cada **1 segundo**, cada cliente faz `GET /state?sala=…` para receber o estado atual (palavra mascarada, tentativas restantes, de quem é a vez, timer, lista de jogadores).
+- **1s é o limite máximo de latência aceitável** para a jogabilidade parecer responsiva (regra do usuário: *"mais que isso, o jogo não será aceitavelmente responsivo"*). Não aumentar o intervalo.
 - Ações do cliente (sugerir letra, desistir, host iniciar/encerrar, kick) são `POST /action` com o token e o payload.
-- 1s de latência é aceitável: o timer de turno é 10s e o jogo é por turnos.
+- O timer de turno de 10s dá margem se a polling oscilar; ainda assim, manter 1s como meta firme.
 - **Sem WebSocket, sem WebRTC, sem STUN/TURN.** Roda em qualquer rede.
 
 ### 3. Modelo de papel (única PWA)
