@@ -38,12 +38,17 @@ function el(tag, attrs, ...children) {
   return e;
 }
 
-async function api(route, method = 'GET', body = null, token = null) {
+async function api(route, method = 'GET', body = null, token = null, extraQuery = null) {
   const url = new URL(API_BASE, window.location.href);
   url.searchParams.set('route', route);
   const opts = { method, headers: {} };
   if (method === 'GET' && token) {
     url.searchParams.set('token', token);
+  }
+  if (extraQuery) {
+    for (const [k, v] of Object.entries(extraQuery)) {
+      if (v !== null && v !== undefined) url.searchParams.set(k, v);
+    }
   }
   if (body) {
     if (token && method !== 'GET') body.token = token;
@@ -483,7 +488,7 @@ function renderClient() {
 async function pollClient() {
   if (!roomId || !clientToken) return;
   try {
-    const res = await api('state', 'GET', null, clientToken);
+    const res = await api('state', 'GET', null, clientToken, { room: roomId });
     lastClientState = res;
     renderClientContent();
   } catch (e) {
